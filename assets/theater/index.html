@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html data-page-node-id="25pB56tGHcpI387ez1rUX2" lang="zh-CN"><head data-page-node-id="AaFjAFeIsaJ3VCupc2CyLQ">
+<script data-page-node-id="gfuB7njqkesUIawUceElFr" src="/page/page_comm/inject.js"></script>
+<meta data-page-node-id="Uhkekcz9Vohy5AHGu9Zxkc" charset="utf-8">
+<meta data-page-node-id="tT7h8RY61MiExyuQxoMho7" content="width=device-width,initial-scale=1" name="viewport">
+<title data-page-node-id="JDMClUnayuS0PQ1pwLy5eD" data-pnid-children="2JLx68AvMyAvkzNaAQs3tR">静界 · 方案 C「沉浸剧场」</title>
+<style data-page-node-id="QDNUvNMgiQ0sbLhF6TOv10" data-pnid-children="lBTfZHiX2VNkosCzlVlejr">
+:root{
+  --void:#070606;
+  --house:#120d0c;
+  --velvet:#3a1512;
+  --paper:#efe8d9;
+  --dim:rgba(239,232,217,.58);
+  --faint:rgba(239,232,217,.30);
+  --gold:#c9a96b;
+  --cinnabar:#b5372a;
+  --serif:"Songti SC","Noto Serif SC","Source Han Serif SC",SimSun,"STSong",serif;
+  --sans:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",system-ui,sans-serif;
+  --ease:cubic-bezier(.16,.85,.25,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--void);color:var(--paper);font-family:var(--sans);line-height:1.9;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,video{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--cinnabar);color:#fff}
+
+/* 胶片颗粒 + 暗角 */
+.grain{position:fixed;inset:-50%;z-index:120;pointer-events:none;opacity:.16;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='170' height='170' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:g .8s steps(3) infinite}
+@keyframes g{0%{transform:translate(0,0)}50%{transform:translate(-1.6%,1.2%)}100%{transform:translate(1.2%,-1.6%)}}
+.vig{position:fixed;inset:0;z-index:118;pointer-events:none;
+  background:radial-gradient(115% 85% at 50% 48%,transparent 42%,rgba(0,0,0,.68) 100%)}
+
+/* 幕布 */
+.curtain{position:fixed;inset:0;z-index:200;pointer-events:none;display:flex}
+.curtain .half{
+  width:50%;height:100%;background:
+    repeating-linear-gradient(90deg,rgba(0,0,0,.5) 0 2px,rgba(255,255,255,.03) 2px 5px),
+    linear-gradient(90deg,#1b0a08,#3a1512 30%,#250e0c 60%,#160908);
+  box-shadow:inset 0 0 120px rgba(0,0,0,.8);
+  transition:transform 1.6s cubic-bezier(.7,0,.2,1);
+}
+.curtain .half.r{transform-origin:right}
+.curtain.open .half.l{transform:translateX(-101%)}
+.curtain.open .half.r{transform:translateX(101%)}
+.curtain .line{position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(201,169,107,.25);z-index:2}
+.curtain.open .line{opacity:0;transition:opacity .4s}
+.curtain-label{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;text-align:center;
+  font-family:var(--serif);letter-spacing:.5em;font-size:12px;color:rgba(239,232,217,.75);transition:opacity .5s}
+.curtain.open .curtain-label{opacity:0}
+
+/* 顶栏 */
+.topbar{position:fixed;inset:0 0 auto 0;z-index:90;display:flex;justify-content:space-between;align-items:center;
+  padding:22px clamp(18px,4vw,54px);mix-blend-mode:difference;color:#fff;font-size:10px;letter-spacing:.26em;text-transform:uppercase}
+.topbar .brand{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-size:13px;letter-spacing:.4em}
+.topbar .brand b{font-family:var(--sans);font-weight:400;font-size:9px;letter-spacing:.24em;opacity:.6;border-left:1px solid rgba(255,255,255,.35);padding-left:12px}
+.topbar a.back{border:1px solid rgba(255,255,255,.4);padding:8px 14px;transition:.4s}
+.topbar a.back:hover{background:#fff;color:#000}
+
+/* 场次索引 */
+.acts{position:fixed;left:clamp(16px,2.6vw,40px);top:50%;transform:translateY(-50%);z-index:95;display:grid;gap:20px;transition:opacity .5s var(--ease)}
+.acts a{display:flex;align-items:center;gap:10px;font-size:9px;letter-spacing:.24em;color:rgba(239,232,217,.32);
+  transition:.45s var(--ease);text-transform:uppercase}
+.acts a .n{font-family:var(--serif);font-size:12px;width:20px;text-align:right;letter-spacing:.05em}
+.acts a .bar{width:0;height:1px;background:var(--gold);transition:.45s var(--ease)}
+.acts a.on{color:var(--paper)}
+.acts a.on .bar{width:22px}
+
+/* HERO */
+.hero{position:relative;height:100svh;min-height:600px;overflow:hidden;display:grid;place-items:center;isolation:isolate}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;
+  filter:saturate(.55) contrast(1.15) brightness(.5);animation:breathe 30s ease-in-out infinite alternate}
+@keyframes breathe{from{transform:scale(1.03)}to{transform:scale(1.1)}}
+.hero .scrim{position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,rgba(7,6,6,.9),rgba(7,6,6,.15) 40%,rgba(7,6,6,.75) 85%,#070606)}
+.hero .center{text-align:center;display:grid;justify-items:center;gap:0;z-index:2;padding:0 20px}
+.eyebrow{font-size:10px;letter-spacing:.46em;color:var(--faint);text-transform:uppercase;margin:0 0 30px}
+.hero h1{margin:0;line-height:1}
+.hero h1 .cn{display:block;font-family:var(--serif);font-size:clamp(84px,15vw,200px);letter-spacing:.08em;
+  text-shadow:0 30px 90px rgba(0,0,0,.7)}
+.hero h1 .en{display:block;margin-top:26px;font-size:clamp(10px,1.1vw,13px);letter-spacing:.66em;color:var(--dim);text-transform:uppercase}
+.hero .tag{margin:34px 0 0;font-family:var(--serif);font-size:clamp(14px,1.4vw,18px);letter-spacing:.34em;color:rgba(239,232,217,.72)}
+.hero .enter{margin-top:46px;display:inline-flex;align-items:center;gap:14px;padding:15px 30px;
+  border:1px solid rgba(201,169,107,.55);color:var(--gold);font-size:11px;letter-spacing:.3em;cursor:pointer;
+  background:rgba(201,169,107,.06);transition:.5s var(--ease);text-transform:uppercase}
+.hero .enter:hover{background:var(--gold);color:#12100c;border-color:var(--gold)}
+.hero .enter svg{width:14px;height:14px;fill:currentColor}
+.hero .bootom{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);font-size:9px;letter-spacing:.4em;
+  color:var(--faint);display:grid;justify-items:center;gap:10px}
+.hero .bootom i{width:1px;height:36px;background:linear-gradient(var(--faint),transparent);animation:cue 2.6s infinite}
+@keyframes cue{0%,100%{opacity:.2}50%{opacity:1}}
+
+/* 0 dB · 静界 */
+.zenwall{position:relative;min-height:100svh;display:grid;place-items:center;overflow:hidden;
+  background:radial-gradient(70% 90% at 50% 45%,#120e0c,var(--void) 78%);border-top:1px solid rgba(239,232,217,.08)}
+.zenwall .bgword{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;user-select:none;
+  font-family:var(--serif);font-size:clamp(120px,26vw,340px);letter-spacing:.1em;
+  color:rgba(239,232,217,.045);transition:opacity 1s var(--ease)}
+.zenwall .center{position:relative;z-index:2;text-align:center;display:grid;justify-items:center;gap:6px;padding:0 20px}
+.zenwall .db-big{font-family:var(--serif);font-size:clamp(70px,12vw,150px);line-height:1;letter-spacing:.02em;color:var(--gold);
+  text-shadow:0 20px 80px rgba(0,0,0,.7)}
+.zenwall .db-big small{font-size:.22em;letter-spacing:.24em;vertical-align:super;margin-left:8px;color:var(--faint)}
+.zenwall .cap{font-size:10px;letter-spacing:.42em;color:var(--faint);text-transform:uppercase;margin-top:14px}
+.zenwall .hint{margin-top:44px;font-family:var(--serif);font-size:clamp(13px,1.3vw,16px);letter-spacing:.2em;color:rgba(239,232,217,.5)}
+.zenwall .hint b{color:var(--gold);font-weight:400}
+.zenwall .harm{margin-top:20px;display:flex;gap:14px;align-items:center;font-size:9px;letter-spacing:.3em;color:var(--faint);text-transform:uppercase}
+.zenwall .harm i{width:44px;height:1px;background:rgba(201,169,107,.4)}
+
+/* 概述 */
+.synopsis{position:relative;padding:clamp(80px,14vh,150px) 0;background:var(--house);border-top:1px solid rgba(239,232,217,.08)}
+.synopsis .grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(34px,6vw,96px);align-items:start}
+.synopsis .label{display:flex;align-items:center;gap:16px;font-size:10px;letter-spacing:.4em;color:var(--faint);text-transform:uppercase;margin:0 0 26px}
+.synopsis .label::after{content:"";height:1px;flex:1;background:rgba(239,232,217,.14)}
+.synopsis h2{font-family:var(--serif);font-weight:400;font-size:clamp(30px,4.4vw,58px);line-height:1.42;letter-spacing:.06em;margin:0 0 40px}
+.synopsis .kw{list-style:none;margin:0;padding:0;display:grid}
+.synopsis .kw li{display:flex;justify-content:space-between;align-items:baseline;gap:18px;padding:15px 0;
+  border-bottom:1px solid rgba(239,232,217,.1);font-size:13px;letter-spacing:.18em;color:rgba(239,232,217,.85)}
+.synopsis .kw em{font-style:normal;font-size:9px;letter-spacing:.26em;color:var(--faint);text-transform:uppercase;white-space:nowrap}
+.synopsis .right p{margin:0 0 24px;color:var(--dim);font-size:clamp(13px,1.15vw,15px);line-height:2.05;text-align:justify}
+.synopsis .right .lead{color:rgba(239,232,217,.92);font-family:var(--serif);font-size:clamp(15px,1.4vw,18px);letter-spacing:.04em}
+@media(max-width:1000px){.synopsis .grid{grid-template-columns:1fr;gap:36px}}
+
+/* 章节翻页（方案 A 版式：正常滚动 + 文字缓慢浮现） */
+.stack{position:relative}
+.act{position:relative;min-height:100svh;overflow:hidden;display:grid;align-items:end;
+  border-top:1px solid rgba(239,232,217,.08);isolation:isolate}
+.act .bg{position:absolute;inset:0;z-index:-2;opacity:0;transition:opacity 1.7s var(--ease)}
+.act.in .bg{opacity:1}
+.act .bg img{width:100%;height:118%;margin-top:-8%;object-fit:cover;
+  transform:translate3d(0,var(--py,0px),0);
+    }
+.act .bg::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(7,6,6,.38) 0%,transparent 14%,transparent 58%,rgba(7,6,6,.52) 100%)}
+.act .inner{position:relative;z-index:2;padding:clamp(30px,6vw,80px) clamp(24px,7vw,110px) clamp(50px,9vh,100px) clamp(30px,11vw,170px);
+  max-width:1180px}
+.act .no{font-size:10px;letter-spacing:.42em;color:var(--gold);text-transform:uppercase;margin-bottom:22px}
+.act h2{font-family:var(--serif);font-weight:400;font-size:clamp(30px,5.2vw,72px);line-height:1.28;letter-spacing:.05em;margin:0 0 26px}
+.act p{max-width:52ch;color:var(--dim);font-size:clamp(13px,1.2vw,15.5px);margin:0}
+.act.center{align-items:center;justify-items:center;text-align:center}
+.act.center .inner{max-width:1000px}
+.act .huge{font-family:var(--serif);font-size:clamp(44px,9vw,132px);letter-spacing:.14em;line-height:1.15;
+  margin:0;text-shadow:0 16px 60px rgba(0,0,0,.8)}
+.act .sub{margin-top:28px;font-size:10px;letter-spacing:.44em;color:var(--faint);text-transform:uppercase}
+/* 文字缓慢浮现（方案 A 的节奏） */
+.act .inner > *{opacity:0;transform:translateY(30px);
+  transition:opacity 1.7s var(--ease),transform 1.7s var(--ease)}
+.act.in .inner > *{opacity:1;transform:none}
+.act.in .inner > *:nth-child(1){transition-delay:.18s}
+.act.in .inner > *:nth-child(2){transition-delay:.55s}
+.act.in .inner > *:nth-child(3){transition-delay:.95s}
+/* 第三幕 · 剑起（方案 A 版式） */
+.act.blade-act .inner{max-width:none;padding-left:clamp(24px,6vw,90px);padding-right:clamp(24px,6vw,90px);white-space:nowrap}
+.act.blade-act .huge{font-size:clamp(44px,8.6vw,140px);letter-spacing:.16em;line-height:1.1;text-shadow:0 10px 60px rgba(0,0,0,.8)}
+.act.blade-act .sub{margin:34px auto 0;max-width:none;text-align:center;font-size:clamp(10px,1.1vw,13px);letter-spacing:.6em;color:rgba(239,232,217,.55);text-transform:none}
+
+/* 放映入口 */
+.screen-sec{position:relative;padding:clamp(80px,14vh,150px) 0;background:var(--house);border-top:1px solid rgba(239,232,217,.08)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 clamp(20px,5vw,64px)}
+.kicker{display:flex;align-items:center;gap:16px;font-size:10px;letter-spacing:.4em;color:var(--faint);text-transform:uppercase;margin:0 0 26px}
+.kicker::after{content:"";height:1px;flex:1;background:rgba(239,232,217,.14)}
+h3.big{font-family:var(--serif);font-weight:400;font-size:clamp(26px,4vw,52px);letter-spacing:.06em;line-height:1.35;margin:0 0 18px}
+.screen-row{display:grid;grid-template-columns:1.4fr .6fr;gap:clamp(24px,5vw,64px);align-items:center}
+.posterbox{position:relative;aspect-ratio:16/9;background:#000;overflow:hidden;cursor:pointer;border:1px solid rgba(239,232,217,.12)}
+.posterbox video{width:100%;height:100%;object-fit:cover;opacity:.75;transition:.8s var(--ease)}
+.posterbox:hover video{opacity:1}
+.posterbox .ov{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(60% 60% at 50% 50%,rgba(0,0,0,.15),rgba(0,0,0,.65))}
+.posterbox .play{width:94px;height:94px;border-radius:50%;border:1px solid rgba(239,232,217,.55);display:grid;place-items:center;
+  background:rgba(10,8,8,.35);backdrop-filter:blur(6px);transition:.5s var(--ease)}
+.posterbox:hover .play{background:rgba(201,169,107,.92);border-color:transparent}
+.posterbox .play svg{width:20px;height:20px;fill:var(--paper);margin-left:4px;transition:.4s}
+.posterbox:hover .play svg{fill:#14100c}
+.posterbox .rt{position:absolute;right:16px;bottom:14px;font-size:10px;letter-spacing:.24em;color:rgba(239,232,217,.8);text-shadow:0 2px 10px #000}
+.chapters{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.chapters li{margin:0}
+.chapters button{width:100%;display:flex;align-items:baseline;gap:14px;padding:14px 0;border:0;border-bottom:1px solid rgba(239,232,217,.1);
+  background:none;color:var(--dim);font-family:var(--sans);font-size:12px;letter-spacing:.16em;cursor:pointer;text-align:left;transition:.4s}
+.chapters button:hover{color:var(--paper);padding-left:8px}
+.chapters .t{font-family:var(--serif);font-size:12px;letter-spacing:.1em;color:var(--gold);min-width:44px}
+.chapters .nm{flex:1}
+.chapters .go{font-size:9px;letter-spacing:.2em;color:var(--faint)}
+
+/* 胶片 · 双行循环 */
+.strip-sec{padding:clamp(56px,9vh,110px) 0 clamp(16px,3vh,38px);background:#0a0808;border-top:1px solid rgba(239,232,217,.08);overflow:hidden}
+.strip-sec .wrap{max-width:1440px;padding:0 clamp(20px,4.4vw,56px)}
+.reel{position:relative;display:grid;gap:clamp(10px,1.4vh,18px);margin-top:clamp(16px,3vh,32px);padding:clamp(14px,2.6vh,28px) 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+.reel::before,.reel::after{content:"";position:absolute;left:0;right:0;height:1px;z-index:3;
+  background:linear-gradient(90deg,transparent,rgba(239,232,217,.14),transparent)}
+.reel::before{top:0}
+.reel::after{bottom:0}
+.reel-row{display:flex;width:max-content;will-change:transform;animation:reelRun var(--dur,74s) linear infinite}
+.reel-row.rev{animation-direction:reverse}
+@keyframes reelRun{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+.reel-set{display:flex;gap:clamp(10px,1.2vw,16px);padding-right:clamp(10px,1.2vw,16px)}
+.frame{position:relative;flex:0 0 auto;width:clamp(196px,21vw,318px);aspect-ratio:16/9;overflow:hidden;background:#050404;
+  box-shadow:0 0 0 1px rgba(239,232,217,.12),0 16px 36px rgba(0,0,0,.55)}
+.frame img{width:100%;height:100%;object-fit:cover;filter:saturate(.86) contrast(1.05) brightness(.9);
+  transition:transform 1.3s var(--ease),filter 1s var(--ease)}
+.frame:hover img{transform:scale(1.05);filter:saturate(1) contrast(1.05) brightness(1.02)}
+.frame .cap{position:absolute;left:0;right:0;bottom:0;padding:28px 13px 11px;font-size:9px;letter-spacing:.22em;
+  color:rgba(239,232,217,.9);text-transform:uppercase;background:linear-gradient(transparent,rgba(0,0,0,.75))}
+.strip-hint{font-size:9px;letter-spacing:.3em;color:var(--faint);text-transform:uppercase;margin-top:4px}
+
+/* 海报墙 · 影院展厅 */
+.pwall-sec{position:relative;padding:clamp(44px,7vh,86px) 0 clamp(50px,8vh,100px);
+  background:linear-gradient(180deg,#060505,#0b0a09 45%,#060505);border-top:1px solid rgba(239,232,217,.08);overflow:hidden}
+.pwall-wrap{max-width:1440px;margin:0 auto;padding:0 clamp(20px,4.4vw,56px)}
+.wall{position:relative;margin-top:clamp(20px,3.4vh,38px);padding:clamp(26px,3.4vw,48px) clamp(16px,2.6vw,40px) clamp(34px,4vw,58px);
+  background:
+    radial-gradient(120% 86% at 50% -14%,rgba(255,238,206,.13),transparent 62%),
+    linear-gradient(180deg,#111110,#0a0a09 58%,#070706);
+  box-shadow:0 44px 110px rgba(0,0,0,.66),inset 0 0 0 1px rgba(239,232,217,.07)}
+.wall::before{content:"";position:absolute;left:5%;right:5%;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,169,107,.5),transparent)}
+.lamps{position:absolute;left:0;right:0;top:-26px;display:grid;grid-template-columns:repeat(6,1fr);
+  pointer-events:none;z-index:1}
+.lamp{justify-self:center}
+.lamp{position:relative;width:2px;height:2px;justify-self:center}
+.lamp::before{content:"";position:absolute;left:50%;top:-3px;transform:translateX(-50%);width:16px;height:16px;border-radius:50%;
+  background:radial-gradient(circle,#fff8e6,rgba(255,236,200,.12) 58%,transparent 72%);
+  box-shadow:0 0 30px 12px rgba(255,232,190,.14)}
+.lamp::after{content:"";position:absolute;left:50%;top:10px;transform:translateX(-50%);width:clamp(80px,10vw,160px);height:clamp(260px,32vw,560px);
+  background:linear-gradient(180deg,rgba(255,242,214,.16),rgba(255,242,214,.05) 40%,transparent 88%);
+  clip-path:polygon(47% 0,53% 0,100% 100%,0 100%);filter:blur(6px)}
+.wall-body{position:relative;z-index:2;display:grid;grid-template-columns:minmax(180px,.66fr) 3.6fr;gap:clamp(20px,3vw,50px);align-items:start}
+.wall-label{padding-top:clamp(6px,1.4vw,18px)}
+.wall-label .t1{font-family:var(--serif);font-size:clamp(40px,5.2vw,82px);letter-spacing:.16em;line-height:1.04;
+  background:linear-gradient(180deg,#f6efdd 8%,#c9a96b 62%,#8a7038 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.wall-label .t2{margin-top:12px;font-size:clamp(10px,1vw,12px);letter-spacing:.46em;color:rgba(239,232,217,.66)}
+.wall-label .rule{width:46px;height:1px;background:rgba(201,169,107,.55);margin:20px 0 18px}
+.wall-label p{margin:0;font-size:11px;line-height:2.15;letter-spacing:.1em;color:rgba(239,232,217,.42);max-width:21em}
+.wall-label .en{margin-top:22px;font-size:9px;letter-spacing:.42em;color:rgba(201,169,107,.7)}
+.wall-label .fl{margin-top:8px;font-size:9px;letter-spacing:.3em;color:rgba(239,232,217,.28)}
+.wall-cols{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(9px,.9vw,14px);align-items:start}
+.wcol{display:grid;gap:clamp(9px,.9vw,14px);align-content:start}
+.wcol:nth-child(2){margin-top:clamp(12px,2.6vw,38px)}
+.wcol:nth-child(3){margin-top:clamp(4px,.8vw,14px)}
+.wcol:nth-child(4){margin-top:clamp(14px,3vw,44px)}
+.print{position:relative;overflow:hidden;background:#050505;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 12px 26px rgba(0,0,0,.62),0 0 34px rgba(255,226,180,.055);
+  transition:transform .6s var(--ease),box-shadow .6s var(--ease)}
+.print img{width:100%;height:100%;object-fit:cover;filter:saturate(.94) brightness(.97) contrast(1.04);
+  transition:filter .8s var(--ease)}
+.print::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(158deg,rgba(255,255,255,.055),transparent 38%)}
+.print:hover{transform:translateY(-4px);box-shadow:inset 0 0 0 1px rgba(201,169,107,.6),0 22px 46px rgba(0,0,0,.85)}
+.print:hover img{filter:saturate(1.04) brightness(1.03)}
+.print .tag{position:absolute;left:0;right:0;bottom:0;padding:22px 9px 8px;font-size:8px;letter-spacing:.16em;
+  color:rgba(255,245,228,.92);background:linear-gradient(transparent,rgba(0,0,0,.8));
+  opacity:0;transform:translateY(4px);transition:.45s var(--ease)}
+.print:hover .tag{opacity:1;transform:none}
+/* 印张比例与照片原比例一致，不做裁切 */
+.p169{aspect-ratio:16/9}
+.p916{aspect-ratio:9/16}
+.wall::after{content:"";position:absolute;left:0;right:0;bottom:0;height:38%;pointer-events:none;z-index:0;
+  background:radial-gradient(70% 100% at 50% 100%,rgba(255,226,180,.075),transparent 70%)}
+.wall-foot{position:relative;height:clamp(8px,1.2vw,16px);background:linear-gradient(180deg,rgba(201,169,107,.14),transparent)}
+.wall-meta{margin-top:clamp(24px,4vw,52px);padding-top:14px;border-top:1px solid rgba(239,232,217,.1);max-width:21em;
+  display:flex;justify-content:space-between;gap:12px;font-size:9px;letter-spacing:.3em;color:rgba(239,232,217,.3);text-transform:uppercase}
+
+/* 字幕 / 落版 */
+.credits{position:relative;padding:clamp(90px,16vh,170px) 0 clamp(70px,11vh,120px);text-align:center;overflow:hidden;
+  background:radial-gradient(80% 70% at 50% 30%,#1a1210,#070606 75%);border-top:1px solid rgba(239,232,217,.08)}
+.credits .line{font-family:var(--serif);font-size:clamp(22px,3.2vw,42px);line-height:1.9;letter-spacing:.14em;margin:0 auto 44px;max-width:18em}
+.credits .small{font-size:9px;letter-spacing:.44em;color:var(--faint);text-transform:uppercase;margin-bottom:22px}
+.crawl{display:flex;gap:44px;justify-content:center;flex-wrap:wrap;margin-top:54px;padding-top:34px;border-top:1px solid rgba(239,232,217,.1)}
+.crawl div{display:grid;gap:8px;font-size:9px;letter-spacing:.24em;color:var(--faint);text-transform:uppercase}
+.crawl b{font-weight:400;font-size:12px;letter-spacing:.12em;color:rgba(239,232,217,.88)}
+.btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border:1px solid rgba(239,232,217,.26);
+  font-size:10px;letter-spacing:.26em;transition:.45s var(--ease);color:var(--paper);text-transform:uppercase}
+.btn:hover{background:var(--paper);color:#0d0b0a;border-color:var(--paper)}
+.btn.gold{background:rgba(201,169,107,.12);border-color:rgba(201,169,107,.5);color:var(--gold)}
+.btn.gold:hover{background:var(--gold);color:#14100c;border-color:var(--gold)}
+
+/* ===== 放映模式 ===== */
+.theater{position:fixed;inset:0;z-index:300;background:#000;display:none;cursor:none}
+.theater.on{display:block}
+.theater.show-ui{cursor:default}
+.theater video{width:100%;height:100%;object-fit:contain;background:#000}
+.theater .tb{position:absolute;left:0;right:0;height:92px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(16px,3vw,40px);opacity:0;transition:opacity .5s;pointer-events:none;
+  background:linear-gradient(rgba(0,0,0,.7),transparent)}
+.theater .tb.top{top:0}
+.theater .tb.bot{bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.8));flex-direction:column;justify-content:flex-end;align-items:stretch;height:auto;padding-bottom:18px;gap:10px}
+.theater.show-ui .tb{opacity:1;pointer-events:auto}
+.theater .brand{font-family:var(--serif);font-size:12px;letter-spacing:.4em;color:rgba(239,232,217,.9)}
+.theater .x{border:1px solid rgba(239,232,217,.4);background:none;color:rgba(239,232,217,.9);padding:8px 14px;
+  font-size:10px;letter-spacing:.24em;cursor:pointer;transition:.4s}
+.theater .x:hover{background:rgba(239,232,217,.92);color:#000}
+.tline{display:flex;align-items:center;gap:14px}
+.tline .t{font-size:10px;letter-spacing:.12em;color:rgba(239,232,217,.7);font-variant-numeric:tabular-nums;min-width:44px}
+.trail{flex:1;height:18px;display:flex;align-items:center;cursor:pointer;position:relative;touch-action:none}
+.trail .bgline{position:absolute;left:0;right:0;height:2px;background:rgba(239,232,217,.22)}
+.trail .fg{position:absolute;left:0;height:2px;background:var(--gold);width:0}
+.trail .dot{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--gold);left:0;transform:translateX(-50%);opacity:0;transition:opacity .3s}
+.trail:hover .dot{opacity:1}
+.trail .mark{position:absolute;top:50%;transform:translateY(-50%);width:1px;height:8px;background:rgba(239,232,217,.4)}
+
+/* 入场动画 */
+.rv{opacity:0;transform:translateY(26px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+@media(max-width:1000px){
+  .screen-row{grid-template-columns:1fr;gap:28px}
+  .acts{display:none}
+  .wall-body{grid-template-columns:1fr;gap:26px}
+  .wall-cols{grid-template-columns:repeat(2,1fr);gap:10px}
+  .wcol{gap:10px}
+  .lamps{top:-20px;grid-template-columns:repeat(3,1fr)}
+  .lamps .lamp:nth-child(n+4){display:none}
+  .wcol:nth-child(n){margin-top:0}
+  .wall-label p{max-width:none}
+  .frame{width:clamp(168px,54vw,286px)}
+  .act .inner{padding-bottom:70px}
+}
+@media(max-width:620px){
+  .wall-cols{grid-template-columns:repeat(2,1fr)}
+  .wall{padding:26px 14px 30px}
+  .lamps{top:-18px;grid-template-columns:repeat(2,1fr)}
+  .lamps .lamp:nth-child(n+3){display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .reel-row{animation:none}
+  .reel{overflow-x:auto}
+}
+</style>
+<style data-page-node-id="jWafvwCNwmAHxePvj6dv86" data-pnid-children="s6rOrWtkzIPufSXcVfFPXe" id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style data-page-node-id="Ew5Vas0ctmPqoaz55LFpXq" data-pnid-children="OcWkkAzhO1x5QFyGm9CVET" id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
+<body data-page-node-id="3tWfo2lZ6h7tNznJ8iBbCK">
+
+<div data-page-node-id="j83ElL56Kc6VQOYQRGj52j" class="grain"></div>
+<div data-page-node-id="LFhsdHr3z6JKFX1p884iw2" class="vig"></div>
+
+<div data-page-node-id="JwRUhDCdjLibBJFOaN6o5r" class="curtain open" id="curtain">
+  <div data-page-node-id="VpsxA7Lqo1dCWWmcfHDNsK" class="half l"></div>
+  <div data-page-node-id="pVeXaGm7F8072AKKNk9nlC" class="half r"></div>
+  <div data-page-node-id="8ev5gqAN4yobeBpqlD4zEA" class="line"></div>
+  <div data-page-node-id="t3k5eYv0hlnx8hhY3G10UB" class="curtain-label"><!--pnid:zbeosQOwnAyGy10bTUC4HH-->静界 · 即将开场</div>
+</div>
+
+<header data-page-node-id="57u5rdhaXvB0cerZ1njaFt" class="topbar">
+  <div data-page-node-id="XfFFjikkX2GW1a1ULu0pOV" class="brand"><!--pnid:A0SbDtqhWLHvY8xsSGLOJy-->静界<b data-page-node-id="4EQaSGXvnDdwGi7CO0NvNz"><!--pnid:qD4jqoLeY32kMhW589Tmwj-->方案 C · 沉浸剧场</b></div>
+</header>
+
+<nav data-page-node-id="TtYdRHKW3X7bZQc32Ny0gQ" class="acts" id="acts">
+  <a data-page-node-id="J2gD0RCUL6ynDHNnmnF5P9" class data-t="top" href="#top"><span data-page-node-id="Gsw3gXLPulKawNB8BPQboa" class="bar"></span><span data-page-node-id="5SMUrUW9VrbJXnHE9gSAej" class="n"><!--pnid:0OtWOm2AgRIPCYWvvnsHSN-->序</span><!--pnid:dMyGxNvXR4Z6PHpTpI3Ej3-->开场</a>
+  <a data-page-node-id="CKwpu1l9GDGMI21c2XePbN" class data-t="zen" href="#zen"><span data-page-node-id="oyDEmD7GpkfNd3MHfvATfD" class="bar"></span><span data-page-node-id="PpzEltmhaEa1LS4w31SeF4" class="n"><!--pnid:80EAh5B0Jay1mZpgWIdMbr-->〇</span><!--pnid:nyfpuUhfVOa2DtEJ0jHn8N-->静界</a>
+  <a data-page-node-id="drCvnuBiVPdS1iba7GapEJ" class="on" data-t="syn" href="#syn"><span data-page-node-id="8qUQ0UAI9ap7V6T6z8ScCz" class="bar"></span><span data-page-node-id="hZJ4wA2vz3RnknCmMP7OrN" class="n"><!--pnid:P7bq6zqobvYEou6iIH3Tue-->述</span><!--pnid:IfoOm9fgE2LnPhozsXujNx-->概述</a>
+  <a data-page-node-id="kQiaZPZ6Cha4imn2IOZoh4" data-t="a1" href="#a1"><span data-page-node-id="wo9aQBIKmRSXOf7klow4RH" class="bar"></span><span data-page-node-id="9i5G6bYnNyarCUtQSBvclM" class="n"><!--pnid:tZwfHcg5KDrjOUuf9Eqc3e-->Ⅰ</span><!--pnid:zR7F6lZbvCOZd9PshZUWtB-->喧嚣</a>
+  <a data-page-node-id="AxTdW6MYhML70bvXGpzjA9" data-t="a2" href="#a2"><span data-page-node-id="YIHgmI8knid7dHsD8RcJ52" class="bar"></span><span data-page-node-id="ZcWpXqVJUor2ZQGYoZEEem" class="n"><!--pnid:WTLeRiClN4kCYepYHLuf3C-->Ⅱ</span><!--pnid:818CfEg3PrszxpquC1anTX-->入静</a>
+  <a data-page-node-id="wBaWl8lHz9bUN6hvxQDDfX" data-t="a3" href="#a3"><span data-page-node-id="cx7XZaTdWI7J8L1hrWJerj" class="bar"></span><span data-page-node-id="kWyLFTsF7TICz9Vc81ov8S" class="n"><!--pnid:8zygFLvH1qYeR5xBLHq3r9-->Ⅲ</span><!--pnid:ATVwzJqhB2Tzgchwo99piz-->剑起</a>
+  <a data-page-node-id="iDENpvnSR8KX28pGuK9A5X" data-t="a4" href="#a4"><span data-page-node-id="NOc2qrtmtbVIV460QLuWsa" class="bar"></span><span data-page-node-id="6b6F2MDl93L2oO1tSWfxJL" class="n"><!--pnid:OBxfU58THpGLtd9B6Y1LFp-->Ⅳ</span><!--pnid:RjSLKkDgVCXUuMASo9sfpG-->归明</a>
+  <a data-page-node-id="ZhrEK2MEzE2LHu8NMeatNG" data-t="screen" href="#screen"><span data-page-node-id="MU1jePHZgdKrts22DfKksq" class="bar"></span><span data-page-node-id="xSjnD8cPQs5HJIkAndu8wh" class="n"><!--pnid:H8YVbm00fQYuSeOt0oSMgC-->▷</span><!--pnid:lwVLYhl9emCmOP9GasWXFO-->放映</a>
+</nav>
+
+<!--pnid:RGv7WHc5Yj28p1LtM2C97y--><!-- HERO -->
+<section data-page-node-id="hriY4p8EEZBwL7etvFvo3o" class="hero" id="top">
+  <video data-page-node-id="Wa7Fj8z2KG7aiLRyeRTKSC" autoplay loop muted playsinline preload="auto" src="assets/film.mp4"></video>
+  <div data-page-node-id="l2moju0Q17wRiWzQ7WqDKK" class="scrim"></div>
+  <div data-page-node-id="sDXJZRfOL8U8t9dNZ0ckn7" class="center">
+    <p data-page-node-id="HB8ExLNKaV9v6oQSQrVq03" class="eyebrow"><!--pnid:PXVTFeyfaOAanWVp1Ed8iT-->AI 动画短片 · 东方幻想 · 2026</p>
+    <h1 data-page-node-id="l27EOuNUcl3CEfUhuSlLXH"><span data-page-node-id="5R8eyOituHaLzgn6OHXq5M" class="cn"><!--pnid:doNlVnLmE2flFE2p2syl0c-->静界</span><span data-page-node-id="jdnIrYSfAGbjS2nlsD6IDS" class="en"><!--pnid:bX9xWPeT0uN7wUdYK9IkWH-->Silent World</span></h1>
+    <p data-page-node-id="UXSvDZkkIRLyJvo3xMWpRL" class="tag"><!--pnid:1O46uwbrRoiwfIS9X8AFLx-->一剑破万籁　一念归清明</p>
+    <button data-page-node-id="9EylK4P1oLeBN3X1Hv2xF7" class="enter" id="enterBtn">
+      <svg data-page-node-id="7R9dwIeMTlVOxAdJiR3eph" viewBox="0 0 24 24"><path data-page-node-id="tSu3uavb5cDxK7E2acKVrf" d="M8 5v14l11-7z"></path></svg><!--pnid:RDuM5bmAKDfDA2j5xMN9iK-->
+      进入放映 · 03:00
+    </button>
+  </div>
+  <div data-page-node-id="ecviCY7CuY0yCUUms9FHpN" class="bootom"><span data-page-node-id="p1dVYZJSuPcBuYmMWpoeqi"><!--pnid:Bhj2wCzyHYBgWTHngtvXUC-->START</span><i data-page-node-id="MgCN9osbfBYJPLbnBGVO9d"></i></div>
+</section>
+
+<!--pnid:DUuADHghTvb9Wryr4Rlo4Q--><!-- 0 dB · 静界 -->
+<section data-page-node-id="osmaYdAOJQQmXB9F1YcB09" class="zenwall" id="zen">
+  <div data-page-node-id="6d3At0Dtu2zQ1q0NAd0hw5" class="bgword" id="zenBgword"><!--pnid:gzeeNNHD5JEDKkwCalM2Do-->喧嚣</div>
+  <div data-page-node-id="lv7VF73xha46Bp9c615yNH" class="center">
+    <div data-page-node-id="MNUCOTipnLUpfYi6OJ2ti3" class="db-big rv"><span data-page-node-id="EZpxz6MLEEgxzoPTnSuSu6" id="zenDb"><!--pnid:SN23BqSq0OMiD7Z0eyudt0-->78</span><small data-page-node-id="TRUO6wCyDStjhKtB2gpmxu"><!--pnid:PZv5XmJSvF4Licu9hPWN39-->dB</small></div>
+    <div data-page-node-id="EHGKs6rFkylY703vTg2uQA" class="cap rv" id="zenCap"><!--pnid:iUavu7HkrWjuirXizHPHS4-->早高峰 · 车厢内平均噪音</div>
+    <div data-page-node-id="EWP5SAkJq0XKQj7KQsOFvm" class="harm rv"><i data-page-node-id="L090CiG04M4KkOX3gLm8q1"></i><span data-page-node-id="9kh8AkYzultTN6WTm1d6uf"><!--pnid:ivdN16OpPL3YnlKq9nld9L-->静界 · SILENT WORLD</span><i data-page-node-id="URISamoDY6wJSBGAYVch82"></i></div>
+    <div data-page-node-id="5OGHl5mVIelK536iptVgyf" class="hint rv" id="zenHint"><!--pnid:Ni7WqMZsXBi7MX2KVlH8vd-->声音关不掉，<b data-page-node-id="zIxqDOatBB0etq34AXx9ly"><!--pnid:mybb3RzQrO2GLZPPyfo5md-->但可以换个频道</b></div>
+  </div>
+</section>
+
+<!--pnid:cwywqJd7jwjRGtbdan80Wy--><!-- 概述 -->
+<section data-page-node-id="mWw9JMuUCmaYBewcX4rvtu" class="synopsis" id="syn">
+  <div data-page-node-id="TESBAFpnxVkIq2GXzEk0Ub" class="wrap grid">
+    <div data-page-node-id="6fDp9ATQDprSxGsYLxBsY5" class="left rv">
+      <p data-page-node-id="anqQoPrzPcmbdBkFM11SIR" class="label"><!--pnid:Gdd7B167sOmVHXmLNlJVjL-->01 — 概述 / Synopsis</p>
+      <h2 data-page-node-id="Oui422qH8aKcNiRMqHKkAv" style="font-size:52px"><!--pnid:mFkRYSBQzDui3076oMCw6E-->《静界》短片概述<br data-page-node-id="KAkW3V4F1JSOdmI2b02tJ8"></h2>
+      <ul data-page-node-id="omvvJLQuRhP8WN70pvMNlq" class="kw">
+        <li data-page-node-id="hl6KzFLGEE4LiMft9QFqf8"><!--pnid:XPxpSA90ZKIFAlydjFhVHf-->都市感官过载<em data-page-node-id="xJoWMp2nIveJhUMiWLK8SE"><!--pnid:SLnv894gKavl6oSDVwdtLn-->Urban sensory overload</em></li>
+        <li data-page-node-id="dDAxtcTzQs3zEMEuFCkKp8"><!--pnid:ilAdFg8BR0eCOzlZXf4CuI-->东方武侠<em data-page-node-id="frVrf4OXHnpFd93QK4JUaO"><!--pnid:mw0JE5YDsut8eXrgMVo1TA-->Eastern wuxia</em></li>
+        <li data-page-node-id="zD4oV5uqv3INjpMPj7dfSL"><!--pnid:tzSnRKiAR4c4goYDMNlXME-->竹林秘境<em data-page-node-id="CFG99DdlNxDnhA75paMcpv"><!--pnid:QaS1QXjCmtLKNzUvsp007I-->Mystic bamboo forest</em></li>
+        <li data-page-node-id="K7dh2cAIz9giP4xMjYJ7vx"><!--pnid:6oFFJjHMl7lwAoBk1u6tWA-->沉浸式静界<em data-page-node-id="pgFqJXFW9FIkodpI9BXDIl"><!--pnid:hGUuCg57lrlvyCJ62Ryg3C-->Immersive inner sanctuary</em></li>
+      </ul>
+    </div>
+    <div data-page-node-id="BLslSan7twhCX6FSnsul7G" class="right rv">
+      <p data-page-node-id="n8a08kMtVaRy4NKGjFMtff"><!--pnid:lg1ulBTCbFUri7rn61U2Ay-->《静界》是一支以蓝牙降噪耳机为核心的创意视觉短片，讲述了一位年轻女孩在早高峰地铁中，被城市噪音包围、逐渐感到疲惫烦躁的故事。
+</p>
+      <p data-page-node-id="Zh9nJjDF2nsBGhHOIusdRO"><!--pnid:ZQO9CMEsS4FfjtqkLuaJwI-->当她轻触耳机开启降噪模式，现实世界的喧嚣逐渐褪去，她的意识进入一片幽静的竹林。在这个东方幻想世界里，她化身手持长剑的世外高人，将现实中的各种噪音幻化为黑色虚影，以剑为刃，与纷扰展开一场奇幻对决。</p>
+      <p data-page-node-id="ziNVvP4f21j2JOlYNRAUKw"><!--pnid:vqnQhCHglSpGjEHSRrDSHq-->随着最后一道黑影消散，女孩重新回到地铁车厢。周围依旧人来人往，城市依旧喧嚣，但她已找回内心的平静。最后，她摘下耳机，将其收回充电舱，完成一次从喧嚣到宁静的沉浸体验。</p>
+      <p data-page-node-id="4i7gqGF1mKKjS3z5HfOzXn" style="white-space:pre-wrap"><!--pnid:YBIPoWGwrJy52MB9FCflxO-->作品以现实与东方幻想交织的视觉叙事，将耳机的主动降噪功能转化为进入内心世界的入口，通过竹林、剑影与黑色声波等意象，展现科技与东方美学的融合，传递出一种生活态度：世界依然喧嚣，但你可以拥有自己的宁静。</p>
+    </div>
+  </div>
+</section>
+
+<!--pnid:fO8sMDc8lioJEg6C2e8TUC--><!-- 叠层叙事 -->
+<div data-page-node-id="yEmdeKzEfdFdOxT1qVEwfn" class="stack">
+
+  <section data-page-node-id="23CTJjxnHxNzz97sj9RElA" class="act" id="a1">
+    <div data-page-node-id="8srn0VE48urdoa9170a8DG" class="bg"><img data-page-node-id="R5CdFlkWnFeJ8dWKXpHpcY" alt src="assets/still/s02.jpg" style="object-position:center 45%"></div>
+    <div data-page-node-id="fHzzVIbP4kdayagcTQYEJV" class="inner">
+      <div data-page-node-id="MWR65FjcDmlIz1NLw5mDkd" class="no"><!--pnid:0SVDiKS3wxur6h7LZmIF9l-->第一幕 / 喧嚣 — Urban sensory overload</div>
+      <h2 data-page-node-id="shK8O1ruRXHbAruXgBNIc0"><!--pnid:kyRH62rvUaBT1FV8Kf5ECC-->《静界》</h2>
+      <p data-page-node-id="oimMMb8M4ApIybPRlKuP7K"><!--pnid:a60Pf0XxcubmGg1iUcWpgp-->早高峰的车厢里，噪音不是一声巨响，而是无数细小的、无处躲藏的入侵：报站、群聊、外放、刹车。听觉的压迫被翻译成视觉的密度——呼吸、睫毛、汗珠。</p>
+    </div>
+  </section>
+
+  <section data-page-node-id="DMnWaVhv07vEeSRkbv7Oyi" class="act" id="a2">
+    <div data-page-node-id="mtrrBKONOxtH6gzouM4O3b" class="bg"><img data-page-node-id="YKeZ811Xb9huRPscwMqZWM" alt src="assets/still/s04.jpg" style="object-position:center 45%"></div>
+    <div data-page-node-id="dnJxKbAnwD2qkQjvBPCKjS" class="inner">
+      <div data-page-node-id="ezYz3dLpdBx5XqRlOrPklo" class="no"><!--pnid:IYPGfDLC3bBCDRDBghi9Vg-->第二幕 / 入静 — Mystic bamboo forest</div>
+      <h2 data-page-node-id="6SweUdgcRYtu6AOIprKoCA"><!--pnid:e2UazfYxtrFnquTN4TVOge-->《静界》</h2>
+      <p data-page-node-id="bI9MK1Fqc3JBZ9QTn3unmx"><!--pnid:sh8C0lgGruPe5MRLroM1ct-->风穿过竹叶，光被切成细条。这里没有分贝，只有呼吸。降噪开启的瞬间，画面从冷硬的金属色滑入湿润的青绿——这是全片唯一一次色彩的呼吸。</p>
+    </div>
+  </section>
+
+  <section data-page-node-id="AzFrMiBD5JqiswybcMdnPu" class="act center blade-act" id="a3">
+    <div data-page-node-id="49y3ESOd24EP3qspkpwOxd" class="bg"><img data-page-node-id="Nh5Y2oKfXQuItwWqdw9aoq" alt src="assets/blade-closeup.png" style="object-position:center 42%"></div>
+    <div data-page-node-id="SyvVnvRjIHMzrzCX4pTU62" class="inner">
+      <p data-page-node-id="0KH6Fu5FRzneqcQU045XEM" class="huge"><!--pnid:GzF3FoU3n7KlPntY5Qs8dI-->一剑破万籁</p>
+      <p data-page-node-id="2oqc8ezYlTMFbUONmc4Dqe" class="sub"><!--pnid:SiYAKPufQs3nDpVOlvdGqc-->第三章 / 剑起 — Eastern wuxia</p>
+    </div>
+  </section>
+
+  <section data-page-node-id="xs1DeCXGY6qcoJX4pNyA4i" class="act" id="a4">
+    <div data-page-node-id="rkbIYwwvW7VQigFnDJz7XD" class="bg"><img data-page-node-id="z71AWzpZqVoDr5MOF4eoAv" alt src="assets/still/s09.jpg" style="object-position:center 32%"></div>
+    <div data-page-node-id="zK5EfScdAEGgMEEMQTpSUq" class="inner">
+      <div data-page-node-id="ZNeffsUdKD9sKuzRYUmRvy" class="no"><!--pnid:NA9r47a56TuWW7nCIv9blD-->第四幕 / 归明 — Immersive inner sanctuary</div>
+      <h2 data-page-node-id="CYmpPGKPlpeCj14nGPa1Cc"><!--pnid:a7GJHZwf1VkszIgezDMXEL-->一念归清明</h2>
+      <p data-page-node-id="WvCXPsvlbTPrBIcqGK9xUr"><!--pnid:kmNED9F4gTBK7kRE5SNWPc-->车厢还是那节车厢。她睁开眼，城市继续喧闹，但她已经拥有了自己的静界。摘下耳机，收回充电舱——科技在这里不是一个卖点，而是一间可以随身携带的、安静的房间。</p>
+    </div>
+  </section>
+
+</div>
+
+<!--pnid:u2sdkR30Q2wwMVHNFTvXt4--><!-- 放映 -->
+<section data-page-node-id="jETjLIxEAKVp8VqAFMqkl9" class="screen-sec" id="screen">
+  <div data-page-node-id="zMzNQDHcijK5o11X6CslrY" class="wrap">
+    <p data-page-node-id="12SeltjS4wTRC6x0UXKTcD" class="kicker rv"><!--pnid:mAB8RlLbodjrBZ0hfkuDhR-->放映 / Screening</p>
+    <div data-page-node-id="eCHXNVE0c14lPE3rEOSqPs" class="screen-row">
+      <div data-page-node-id="HWkjeZtF90Tdla19Nf6FAI" class="posterbox rv" id="posterBox">
+        <video data-page-node-id="QNn0e0gL1GFhudvfPbCXQ6" id="pv" muted playsinline preload="metadata" src="assets/film.mp4"></video>
+        <div data-page-node-id="zJPTeq3Tfrl3bgAUfcIwvi" class="ov"><div data-page-node-id="BGwVLYTg8BqIFhZOd3qE2H" class="play"><svg data-page-node-id="FRVDEN5gAago1bFIg48IZd" viewBox="0 0 24 24"><path data-page-node-id="AOReWo2xwBBT0MnNXrmt4i" d="M8 5v14l11-7z"></path></svg></div></div>
+        <div data-page-node-id="A1M2IRIsGNxDLVvj8X3REh" class="rt"><!--pnid:kSa3U6GUlA9NgTPw7ZwRH2-->03:00 · 16:9</div>
+      </div>
+      <div data-page-node-id="Mv6I9kVxEnt1ZnxiHaKT7Q" class="rv">
+        <h3 data-page-node-id="UCA8EYv2ubwiDdxODzrZur" class="big" style="text-align:center; font-size:72px"><!--pnid:mjUiA5uhVHB9mmkqQ3umBs-->《静界》<br data-page-node-id="ye83EwXyvVbA8MsxRqinaA"></h3>
+        <p data-page-node-id="g9LKoBvdLShvXkYtQNZ1jb" style="color:var(--dim); font-size:13px; margin:0 0 22px"><!--pnid:pemNPh5BmeVqClVarcOWJ5-->全片以现实与东方幻想交织的视觉叙事，轻触耳机开启降噪模式，现实世界的喧嚣逐渐褪去。</p>
+        <ul data-page-node-id="f5Yeb5cQpeGEYtClXaH3nh" class="chapters" id="chapters">
+          <li data-page-node-id="Xpwa2Y5ufxH741H3ZLe3wR"><button data-page-node-id="TehDc5YskTTs6UMAjchaay" data-t="0"><span data-page-node-id="v1YdNR1joSiLAYNTePdhtp" class="t"><!--pnid:r48MJ75cAKMxNNCDLL2XYv-->00:00</span><span data-page-node-id="HDvu3iNc6xscIP1a8rVV3v" class="nm"><!--pnid:qGahQYJUVFIR4y0IVQbLHN-->第一幕 · 喧嚣</span><span data-page-node-id="TN6Jd8aEiqAwR4Ni1c090A" class="go"><!--pnid:FnEDx507IZbu3zLAMGAS7V-->播放</span></button></li>
+          <li data-page-node-id="2CxLU2DYrzYPJotUt6GObD"><button data-page-node-id="uQjhifxErtsllBkVSKDr9v" data-t="62"><span data-page-node-id="FlJRGHNu7XR2HGnEGhhlYb" class="t"><!--pnid:DtZ88y28V5ihxsG2kcZcFO-->01:02</span><span data-page-node-id="YCZB4I0BpuStyjq3smH4HN" class="nm"><!--pnid:7UMWR2WCexWwj62JaVv31J-->第二幕 · 入静</span><span data-page-node-id="56UKsq8cjxJOLOlmEI6NRx" class="go"><!--pnid:rYG24a907LSHQF0OuDZQKU-->播放</span></button></li>
+          <li data-page-node-id="3eeJar2GXuizMoPqlYEDTp"><button data-page-node-id="nwIEVYEKf6muNIctv6T4j7" data-t="124"><span data-page-node-id="RrDdxlnjI8odsJjCzQ0iOH" class="t"><!--pnid:7vPAqSBqkKb7FCWlvXGMbK-->02:04</span><span data-page-node-id="gNcPvouhhNxJywDjkxssa3" class="nm"><!--pnid:UhP157J38ED1xAOohZT6ko-->第三幕 · 剑起</span><span data-page-node-id="YKglA1bTRiabM8lbEMBYEc" class="go"><!--pnid:vJiXMTgLawLWU3fFFzjRYZ-->播放</span></button></li>
+          <li data-page-node-id="0jre3mCFwwo2iTbBAXIucA"><button data-page-node-id="CUWOGtTNdNl6gH5UfYJ70g" data-t="168"><span data-page-node-id="LCz2SWc91YwHHMjr45k0dX" class="t"><!--pnid:Vuv7PITBOxXjh6XFYi4e9t-->02:48</span><span data-page-node-id="5RP2TRQAvyrFoOuXenzYHs" class="nm"><!--pnid:PR0hkDzZ7nTIpY014pBnnL-->第四幕 · 归明</span><span data-page-node-id="kgaZIE2QPWZ78SXfyoHqb0" class="go"><!--pnid:Kpz1UxRtebAnyiou2Nbbrw-->播放</span></button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--pnid:RQLZc2cY975BFphD9hyaev--><!-- 胶片 · 双行循环 -->
+<section data-page-node-id="7xyzafy3PojkkvLd2krhho" class="strip-sec">
+  <div data-page-node-id="gBJSutAO9mPwDcOd0K8oPY" class="wrap">
+    <p data-page-node-id="gfb7dn6plLIEXV8n4p5J16" class="kicker rv"><!--pnid:Csrbz9tL3LcQVPTXcUeNY6-->剧照 / Film strip</p>
+    <h3 data-page-node-id="6jaNvv9sGTtjYW4nhUEbOa" class="big rv" style="margin-bottom:4px"><!--pnid:D02sPRcBgRA65EUvJJr3y1-->动画静帧展示</h3>
+    <p data-page-node-id="dxMtoKV6PW4r4kko12pBPF" class="strip-hint rv"><!--pnid:7U1V4dscco8lC7WxxvCvxQ-->ANIMATION STILL FRAME DISPLAY</p>
+  </div>
+  <div data-page-node-id="FMNDo9sylaPqZ6qQjpdxmo" class="reel" id="reel">
+    <div data-page-node-id="5d9NixzaHIx4jJJW2YW9w4" class="reel-row" style="--dur:84s">
+        <div data-page-node-id="gsF3K8EgJxPIKrnKBAhf91" class="reel-set">
+          <div data-page-node-id="hpIxg76tfOe78sg6WIQTVv" class="frame"><img data-page-node-id="Fa21vRQyHaGwX6rv1lO4ZM" alt decoding="async" loading="lazy" src="assets/still/s01.jpg"><span data-page-node-id="rSAKEZVFeunMLtXqmFhUgx" class="cap"><!--pnid:BAj0FTTQET5ULjILk2Alye-->对峙 · 黑影</span></div>
+          <div data-page-node-id="kj2LkNaLng5cvo0fABy0k0" class="frame"><img data-page-node-id="H3CNZctPWnsAcdL7N4JsQi" alt decoding="async" loading="lazy" src="assets/still/s02.jpg"><span data-page-node-id="r6OBVgJe78YioXa8xbM7rn" class="cap"><!--pnid:vINxzuw9EZjyjEMIa0j9l3-->早高峰 · 车厢</span></div>
+          <div data-page-node-id="uzDI5kjmn6C8tMALMXzl3Y" class="frame"><img data-page-node-id="xDiAsVXY0fJOb9AAM96lWx" alt decoding="async" loading="lazy" src="assets/still/s03.jpg"><span data-page-node-id="MmVKpFbSGdO0cAhGoaxRwj" class="cap"><!--pnid:lmpiOJevugJPxrWBQK1yem-->剑起 · 对决</span></div>
+          <div data-page-node-id="KhRiX44cXd0BRrIq3di6ts" class="frame"><img data-page-node-id="xohbc54ejtHBugq2Y6wlje" alt decoding="async" loading="lazy" src="assets/still/s04.jpg"><span data-page-node-id="V4wkRUDB00oYQ8VCszoYvf" class="cap"><!--pnid:pVDr1VH2SZs3rHoGoPj2L4-->竹叶 · 露</span></div>
+          <div data-page-node-id="WS520aWuXPuOln2NU688ks" class="frame"><img data-page-node-id="ahiW7otjG569blYaEYrMmF" alt decoding="async" loading="lazy" src="assets/still/s05.jpg"><span data-page-node-id="n5wXR7qqJuP9VXC8QRsPAp" class="cap"><!--pnid:NsKo6EFNLtisFkijPCUCjB-->竹林 · 远立</span></div>
+          <div data-page-node-id="TgONMOuJoxGQky2KxPa810" class="frame"><img data-page-node-id="lpu0903grULBr1x05NsqXv" alt decoding="async" loading="lazy" src="assets/still/s06.jpg"><span data-page-node-id="NUaOof9g09mIOq2wh58Vwz" class="cap"><!--pnid:oCIHxS2IaIyMZ5lU824HWB-->握拳 · 蓄势</span></div>
+        </div>
+        <div data-page-node-id="bk3rTLszKNllBOpGwWEKqW" class="reel-set">
+          <div data-page-node-id="g66O6MiXbQlGavul1qpWre" class="frame"><img data-page-node-id="jjo4q1rZ653Av88FdTSAGK" alt decoding="async" loading="lazy" src="assets/still/s01.jpg"><span data-page-node-id="tX91d3Yv4eEW2KXzvYEdTk" class="cap"><!--pnid:CnfHSuxkfn0mDtqwDz5j9G-->对峙 · 黑影</span></div>
+          <div data-page-node-id="RAOdsq3gMM7EdRKiuJOZm1" class="frame"><img data-page-node-id="EE1nOfiIMuqTT7dDQhaua4" alt decoding="async" loading="lazy" src="assets/still/s02.jpg"><span data-page-node-id="bctcJwpEA6kPSAVe9ktSQ6" class="cap"><!--pnid:DXfAjctkWwQkUhacO6QtLF-->早高峰 · 车厢</span></div>
+          <div data-page-node-id="OJtqu64u5T8lMsJCTjRWbU" class="frame"><img data-page-node-id="IHJdbyn8A94GBp5l7vaaCK" alt decoding="async" loading="lazy" src="assets/still/s03.jpg"><span data-page-node-id="Ge8IgwUF7xneBtrJlmXDVm" class="cap"><!--pnid:5vnxO0U4UicWtBtxdi1ogu-->剑起 · 对决</span></div>
+          <div data-page-node-id="zic8VYvixJTafW8K2dqb6X" class="frame"><img data-page-node-id="7K2dBQVmZTnZi2eg5XtYkx" alt decoding="async" loading="lazy" src="assets/still/s04.jpg"><span data-page-node-id="MM6xgEiAiu0EMDveXAbmM1" class="cap"><!--pnid:oaAQqmiKpAcnavhj3uZSUo-->竹叶 · 露</span></div>
+          <div data-page-node-id="YQlGw0lD4qyK3woxkYNs3z" class="frame"><img data-page-node-id="w3wq36eEg3HOcNEt2c0GXc" alt decoding="async" loading="lazy" src="assets/still/s05.jpg"><span data-page-node-id="MzFIMyOqQro5cAj2tNJgvI" class="cap"><!--pnid:1hOcvkwWDDG08fg1FsCUEs-->竹林 · 远立</span></div>
+          <div data-page-node-id="Tx5UjQXDxNLdpKpYu13fqS" class="frame"><img data-page-node-id="C6mdwCEfFawazMGkVot56u" alt decoding="async" loading="lazy" src="assets/still/s06.jpg"><span data-page-node-id="OOzBcAoQBqofpf6kniWTdf" class="cap"><!--pnid:2YGdTd9kkH76JYE8BlDCny-->握拳 · 蓄势</span></div>
+        </div>
+    </div>
+    <div data-page-node-id="1WzCjwnEPGuwW0te62TCcN" class="reel-row rev" style="--dur:100s">
+        <div data-page-node-id="ZOMDLFUkxHpUlEl7YfovUl" class="reel-set">
+          <div data-page-node-id="PR09OQTxFjt3BzXnkzQEiP" class="frame"><img data-page-node-id="oktsTIZCtN15O3JhNzoEZE" alt decoding="async" loading="lazy" src="assets/still/s07.jpg"><span data-page-node-id="Lg6sr9BnHviDB8Nz4l9oNG" class="cap"><!--pnid:LQQizw5zYB4D2PPp6UXeCn-->秘境 · 竹影</span></div>
+          <div data-page-node-id="U1Ti451v63vokqqUCatOnx" class="frame"><img data-page-node-id="kQiKt9K4OsdcriANnedm5o" alt decoding="async" loading="lazy" src="assets/still/s11.jpg"><span data-page-node-id="87y0VRI4KkVaeVNaKM0nrR" class="cap"><!--pnid:0tqKah2L6zx4XdGEXylJhZ-->竹隙 · 凝视</span></div>
+          <div data-page-node-id="84H7kK3MU9gxXQIGIafWT5" class="frame"><img data-page-node-id="7UASuq6wfyfnMfFX0sQTTq" alt decoding="async" loading="lazy" src="assets/still/s09.jpg"><span data-page-node-id="oZ2ztMYqHGWEhJ2QLU5U1b" class="cap"><!--pnid:5V8IAnp1rzdvRHZPq8Owp6-->归明 · 立像</span></div>
+          <div data-page-node-id="1QlfkzMPhCRV37efVG121M" class="frame"><img data-page-node-id="NiGuBTGYW8hMgVG4vQjZup" alt decoding="async" loading="lazy" src="assets/still/s08.jpg"><span data-page-node-id="s4NUmWrOXsDQwJuA341wkw" class="cap"><!--pnid:jnA4JTZgih9Jj4rsTeBLS0-->剑锋 · 特写</span></div>
+          <div data-page-node-id="nWsVi1gmbqY0Pj07PmXpBc" class="frame"><img data-page-node-id="5HIGDNJMcZTIyJGEY9yz48" alt decoding="async" loading="lazy" src="assets/still/s12.jpg"><span data-page-node-id="TShgjgiRIkeZryr4r3v5q7" class="cap"><!--pnid:yynJ0xxwh6uhhIhrjtFkUI-->万籁 · 深渊</span></div>
+          <div data-page-node-id="C8GwHc0ZfQ4sDA4VLaVoo6" class="frame"><img data-page-node-id="ItOQy9YuOGWm0ixXHrVSHB" alt decoding="async" loading="lazy" src="assets/still/s10.jpg"><span data-page-node-id="ZjoqW6SrobGxyiiLqT3p8T" class="cap"><!--pnid:LYagMsanIWp0karNbKVVuX-->觉醒 · 眼神</span></div>
+        </div>
+        <div data-page-node-id="gI8z64Nv1mqNQrbABdbCGq" class="reel-set">
+          <div data-page-node-id="inDV5zfe52oFdB3LTtQwPy" class="frame"><img data-page-node-id="49KwQzCzqtqDzYHwWB8rbF" alt decoding="async" loading="lazy" src="assets/still/s07.jpg"><span data-page-node-id="ZiGKZNObtqUEaQfJpvGR2y" class="cap"><!--pnid:TaBSLML3IcMnod1Tacsk0J-->秘境 · 竹影</span></div>
+          <div data-page-node-id="QP38FTEqrBenEJvxcfRvYV" class="frame"><img data-page-node-id="B9EVMqy47kPQYqASNDeelU" alt decoding="async" loading="lazy" src="assets/still/s11.jpg"><span data-page-node-id="KnsVtWdylIQvzX47tRsHfj" class="cap"><!--pnid:5JBJ0FEukBcVFt40PXXFkv-->竹隙 · 凝视</span></div>
+          <div data-page-node-id="vlc6jGt36ik51a1Xsh5KpN" class="frame"><img data-page-node-id="f7RfO7BLIFUuqlq18gwZWq" alt decoding="async" loading="lazy" src="assets/still/s09.jpg"><span data-page-node-id="27rrDDYxXMcCUB36mdnJNM" class="cap"><!--pnid:ioMmWop4c6OjK1hd0f8nwg-->归明 · 立像</span></div>
+          <div data-page-node-id="nRJmAW4fLzOC2BPfkuVxED" class="frame"><img data-page-node-id="ZlqZUipKiaztHal1nPbyyu" alt decoding="async" loading="lazy" src="assets/still/s08.jpg"><span data-page-node-id="h3TzSGpHrjiO0PCNHQgqLc" class="cap"><!--pnid:lT0Yl1WJVgMIwzXZw3mJsS-->剑锋 · 特写</span></div>
+          <div data-page-node-id="TW4x8r6dHMfE8s3rNX8wYt" class="frame"><img data-page-node-id="6C9qPDlP1KjawxkyWLkVNb" alt decoding="async" loading="lazy" src="assets/still/s12.jpg"><span data-page-node-id="Obk13dmEbLQr1ZUKua4FEX" class="cap"><!--pnid:KW81hwfJgfoDuDgE2T9fJa-->万籁 · 深渊</span></div>
+          <div data-page-node-id="dfD9BK8B5Gdtg94IRVW15K" class="frame"><img data-page-node-id="R62StVpgLAgbjetAWGHHLi" alt decoding="async" loading="lazy" src="assets/still/s10.jpg"><span data-page-node-id="HVhANcVhB9eKikdFq3s9UK" class="cap"><!--pnid:WuZ6Av3jrOJUeH8Ylidsab-->觉醒 · 眼神</span></div>
+        </div>
+    </div>
+  </div>
+</section>
+
+<!--pnid:rsaRa64W3HRsfiMSejbbW0--><!-- 海报墙 -->
+<section data-page-node-id="pa0p8e4uO0kDhkaLphGtJv" class="pwall-sec">
+  <div data-page-node-id="cVXXetGJNJ2drxYwc7ad14" class="pwall-wrap">
+    <p data-page-node-id="HfyDufcwkTkSxsPeXLK0b6" class="kicker rv"><!--pnid:hmWBiSX0wZgH3rUXAMgOJW-->海报 / Posters</p>
+    <h3 data-page-node-id="jpKRxXYPAU7Cs8NyWCOiV1" class="big rv" style="margin-bottom:6px"><!--pnid:7DCvhvR0eX29vvMl0BEGl5-->海报墙</h3>
+    <p data-page-node-id="wTOVuLErGBoJO6taJvs9Ei" class="strip-hint rv"><!--pnid:aGRulZs56kCkLc3y8ZDwP5-->poster wall</p>
+
+    <div data-page-node-id="oxZSA0def2jqPlTXQg1lnv" class="wall rv">
+      <div data-page-node-id="CrKIQFjaK4kV2kwVgWu65S" class="wall-body">
+        <div data-page-node-id="NdsM68Dl3bM1E2Kp6eLnDD" class="wall-label">
+          <div data-page-node-id="i5NO5mopcvUikabjsYh5sV" class="t1"><!--pnid:sSr5rE3FRtvyM7GzqFdKEK-->静界</div>
+          <div data-page-node-id="C2hV9bNeM5Yu5eYbkS8gmy" class="t2"><!--pnid:waezNYeKiVEEUIcCw5QOcB-->电影艺术海报</div>
+          <div data-page-node-id="7bigQZl6NUgGGcfEbT42vQ" class="rule"></div>
+          <p data-page-node-id="vk3gPys1NCKYjXC4Tj4Uhu" style="white-space:pre-wrap"><!--pnid:AQso69X37rv8scmegYcNZ7-->11月31日
+“静”候您的到来
+《静界》</p>
+          <div data-page-node-id="Ll08OFsQuMFq93sn8H9Ak4" class="en"><!--pnid:gOcjDgwz1sbZ5pvFacVhnb-->SILENT WORLD · POSTER WALL</div>
+          <div data-page-node-id="bFfxOqjum7Hj6yPZUCUqUZ" class="fl"><!--pnid:yXMGCOglNcHj05Dre1Bpdc-->1F — 静界展厅 / 常设</div>
+          <div data-page-node-id="PJhs3Hnbyyz9C5XIsJG4P3" class="wall-meta"><span data-page-node-id="3MfQMNAIbxQVICtQ7E9tTl"><!--pnid:jQ8gqV9xb4ais5C4LdRWul-->7 Prints</span><span data-page-node-id="21KIe7zfZjZC5TT9HGCEho"><!--pnid:mztudnHlOPlEm94RYo7N8J-->2026 / 11</span></div>
+        </div>
+        <div data-page-node-id="GVWWsJIxLbscMddTWHWKbI" class="wall-cols">
+          <div data-page-node-id="IbAdGZPfWlFkXFSc2TaAcC" class="lamps">
+            <i data-page-node-id="DBXFiaNxceiJdUGrDY0WGT" class="lamp"></i><i data-page-node-id="fHsyIDkuSauI429xF1ub43" class="lamp"></i><i data-page-node-id="dxobNlt1NqqjjZQNJf6uVq" class="lamp"></i><i data-page-node-id="Vjb5j4bXVBevsdMd5Fl5vn" class="lamp"></i><i data-page-node-id="V9QtLBCxzdPRPL2EbJ7CJL" class="lamp"></i><i data-page-node-id="kqyEqmzzky9KPNUogu9oZ6" class="lamp"></i>
+          </div>
+        <div data-page-node-id="BFGQI1bCD0TcqAetm4T4IP" class="wcol">
+          <div data-page-node-id="JPsmSeJqIbR2uPObOb62fn" class="print p916"><img data-page-node-id="rKRQ0uMn0b2EEJHVfA8iC4" alt="主海报" src="assets/poster-vertical.jpg" style="object-position:center 50%"><span data-page-node-id="q6Hmu4HuifE43oL1a4XCnq" class="tag"><!--pnid:seDP7w6ONgat4PbzrEyeAj-->主海报</span></div>
+          <div data-page-node-id="8m6GWtlerFdf8qAtKKN1jf" class="print p169"><img data-page-node-id="idj6x8vXqCTWCFglM3RWBQ" alt="觉醒 · 眼神" src="assets/eyes-closeup.jpg" style="object-position:center 40%"><span data-page-node-id="qCcD9mjxuH8EZksOmbkmte" class="tag"><!--pnid:0u6iDN5cGmL6bJLePqZVF3-->觉醒 · 眼神</span></div>
+        </div>
+        <div data-page-node-id="Lw48qaA3e79qNq2dO3epKU" class="wcol">
+          <div data-page-node-id="vCVmHz8trpOr9qZyqquDj1" class="print p169"><img data-page-node-id="X6Iwbl2srikQxIfQUBvKUC" alt="剑起 · 动作版" src="assets/slash.jpg" style="object-position:center 46%"><span data-page-node-id="Ys3gfU8ev2eAPgJfS7ekZr" class="tag"><!--pnid:QEfgUqiAbOevSpp2i8pjtM-->剑起 · 动作版</span></div>
+          <div data-page-node-id="iD0Bq9id2hwfilb704poHa" class="print p916"><img data-page-node-id="NBoNre24pbelIjRXoU2788" alt="人物海报" src="assets/poster-character.jpg" style="object-position:center 26%"><span data-page-node-id="4t8tpDOrCLsqFtkrTDAVZz" class="tag"><!--pnid:pIPTRU8iHydy56tAnVXc49-->人物海报</span></div>
+        </div>
+        <div data-page-node-id="9lV8YQlXWkB6tXt7mfhQbm" class="wcol">
+          <div data-page-node-id="RqbozvddMmyPp9qCRlh6s9" class="print p169"><img data-page-node-id="p1YYsxEIXaRFLqGD9B5vNB" alt="主视觉" src="assets/keyart-sword.jpg" style="object-position:center 50%"><span data-page-node-id="7RMoTjlDOXTGmJrNrSnIoR" class="tag"><!--pnid:hF9o0cY0ay33A0WlMkSRpH-->主视觉</span></div>
+          <div data-page-node-id="jCtTwEIrMWIh6OzFy1AeUs" class="print p169"><img data-page-node-id="m5xstMvR3CuuRbKmEXfctI" alt="定档海报" src="assets/bamboo-leaves.jpg" style="object-position:center 35%"><span data-page-node-id="JfdZCLS3h2GLBVTIIAVNgw" class="tag"><!--pnid:squKUocxhroUok90jGRxfp-->定档海报</span></div>
+          <div data-page-node-id="4exrcQBHPQEQt6FYYZndNX" class="print p169"><img data-page-node-id="9hJ3Rn2hunm4T3gBNfSmZe" alt="主视觉 · Silent World" src="assets/keyart-silent.jpg" style="object-position:center 45%"><span data-page-node-id="uqyLWoweHC5nzIUdTr3bV5" class="tag"><!--pnid:MVjvPQq8VDGpbCsavtLVCW-->主视觉 · Silent World</span></div>
+        </div>
+        </div>
+      </div>
+    </div>
+    <div data-page-node-id="Q5SiVcmSc6T0Ik9iblWZlR" class="wall-foot"></div>
+  </div>
+</section>
+
+<!--pnid:N4dn0QZde0ncnhSf3xIP8R--><!-- 落版 -->
+<section data-page-node-id="lnH7WitQ1Xf9OvRC7TbdOg" class="credits">
+  <div data-page-node-id="40SsLSAzfZpoHiAz0OLoF6" class="wrap">
+    <p data-page-node-id="slp6HLDu6MbHw9EeV9B0yB" class="small rv"><!--pnid:Sf4RClqFtSlXCfzZLVa0HY-->Fin</p>
+    <p data-page-node-id="Q2g2YX1PT4dehepQ73huNN" class="line rv"><!--pnid:Dw7kutvsuQaeKqp0FrZOeV-->世界依然喧嚣，<br data-page-node-id="bR1feiZSe3UUsjU2Vt4D2h"><!--pnid:YeHEmzc6RD1WfUahEsrhvM-->但你可以拥有自己的宁静。</p>
+    <div data-page-node-id="82fLeiEwmEnhXGdEkgh0RF" class="btn-row rv">
+      <button data-page-node-id="h3XZsLriOqBTnjOr7Up2a9" class="btn gold" id="enterBtn2"><!--pnid:xaifDd1kd0I6JpKcS66l2H-->再看一遍 · 进入放映</button>
+      <a data-page-node-id="KqbLBVa5V0ceIad6QLtzvx" class="btn" href="#top"><!--pnid:lCsOJ8GFwAAqiETtUg3eop-->回到顶部</a>
+    </div>
+    <div data-page-node-id="qBMjes3K4USn0UhDmJqRtu" class="crawl">
+      <div data-page-node-id="DiL58dCEhoUfTxqmL3BRIq"><span data-page-node-id="4mgU1CNOVmbAJqv4QRv3Eo"><!--pnid:alDFPW9nFRWtBD9Pdg6fJK-->导演</span><b data-page-node-id="yGbwRHDpXMA7bscQzgkToI"><!--pnid:ejbGICDnA7lDzse0pxjd2v-->刘君君</b></div>
+      <div data-page-node-id="K5thM8Wfhmv95xk5b7I79C"><span data-page-node-id="iO9GraWD6ufNqXOmsLYf4a"><!--pnid:LWroS4wuItLIktIRuMgFeE-->类型</span><b data-page-node-id="Mgn5J5qD864uoJe07MXJkN"><!--pnid:GCQwiheXXvCLIoxmtbreEg-->AI 动画 / 东方幻想</b></div>
+      <div data-page-node-id="gOMLvgy99DJd8Mzgbwgb4u"><span data-page-node-id="0QYwG4aRSXNNOnrB2MONgD"><!--pnid:UGFpX85IkXzOE6cWUd1zUg-->片长</span><b data-page-node-id="78dY0Yul8rDJZQLyviCgOC"><!--pnid:olIa6TNV9Hs0FFxd0n1KDt-->03:00</b></div>
+      <div data-page-node-id="wrZMGvjHomLdBk2r6mv2Pg"><span data-page-node-id="masuYaMDNdyjBaCZDY3YUf"><!--pnid:EXpDVVPEss9hsUO04mcgxh-->年份</span><b data-page-node-id="8s2yg2tlJFnTU9Y0E4bLlp"><!--pnid:QXESZRfuTVanPuSI7IOn6y-->2026</b></div>
+      <div data-page-node-id="LS5dGYwdY7cC4BcKJWR0aH"><span data-page-node-id="33ZCvH1htix6VuioY3FGLA"><!--pnid:SWe0Qqyu6YeSANLKERdkZP-->展厅</span><b data-page-node-id="pqQmDu5xoifu7GIkmV50i3"><!--pnid:AGgZiflrZlENZ4jF2JG8Gl-->3号MAX展厅</b></div>
+    </div>
+  </div>
+</section>
+
+<!--pnid:NT4go24lzOPQ492b9lD3Zj--><!-- 放映模式 -->
+<div data-page-node-id="N2JRvFyYjLaPAj6fMpbESF" class="theater" id="theater">
+  <video data-page-node-id="8BbJfoGMb1ln4u4T0LZSms" id="tv" playsinline src="assets/film.mp4"></video>
+  <div data-page-node-id="4TOvfBuOg94Ae2xoWTzyj9" class="tb top">
+    <div data-page-node-id="Ma7N9xwWEcmjFdvjbE54Ol" class="brand"><!--pnid:GaWj0Kfu9ECMTxRZh2iQn3-->静界 · SILENT WORLD</div>
+    <button data-page-node-id="Xkn0HttvZWhaMPdx9FcH5V" class="x" id="exitT"><!--pnid:mD8v11wywv6r3MkYL4IpYJ-->退出放映 ESC</button>
+  </div>
+  <div data-page-node-id="TFDsgE5ekXgP7HPj18yuGC" class="tb bot">
+    <div data-page-node-id="EyGN2uJkqfoBsbtK4tsAfQ" class="tline">
+      <span data-page-node-id="vI4Hc5o2h6cRh8lvERjTh5" class="t" id="tNow"><!--pnid:BMAQLcXdUSATcSewl7h063-->00:00</span>
+      <div data-page-node-id="267IQSJ8iZe00b7W60ZVu8" class="trail" id="trail">
+        <div data-page-node-id="TSlt2ISgJREdBPa3rwi5GC" class="bgline"></div><div data-page-node-id="TrI3W7LJXKB3vDCNouB8ck" class="fg" id="tfg"></div><div data-page-node-id="Yy6Omm2A2RaCP8MnqAnt33" class="dot" id="tdot"></div>
+        <div data-page-node-id="xSsw7HZPpM5i2Kr6YGxb5x" class="mark" style="left:34.4%"></div>
+        <div data-page-node-id="kD6y7KQSZsS03TkQtyntZT" class="mark" style="left:68.9%"></div>
+        <div data-page-node-id="SVfbaciieRnGAh4Zj3j8D0" class="mark" style="left:93.3%"></div>
+      </div>
+      <span data-page-node-id="XJzaBl8TcMa1D2EuMMdUoa" class="t" id="tAll"><!--pnid:IXnhvfPmfu54ZXiRIkKLqZ-->03:00</span>
+    </div>
+  </div>
+</div>
+
+<script data-page-node-id="1VLBFzqAblysifeJT2V0Cy" data-pnid-children="wYFtWZwmtCh9oeafskVDdZ">
+(function(){
+  /* ---------- 幕布开场 ---------- */
+  const curtain = document.getElementById('curtain');
+  addEventListener('load', ()=> setTimeout(()=> curtain.classList.add('open'), 550));
+  setTimeout(()=> curtain.classList.add('open'), 2400); // 兜底
+
+  /* ---------- 入场 ---------- */
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.15});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+  /* 章节浮现：进入视口时给 .act 加 .in（修复黑屏：样式依赖 .act.in 才显示内容） */
+  const actIo = new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); actIo.unobserve(e.target); } });
+  },{threshold:.2});
+  document.querySelectorAll('.act').forEach(el=>actIo.observe(el));
+
+  /* ---------- 场次索引 ---------- */
+  const links = [...document.querySelectorAll('#acts a')];
+  const marks = ['top','zen','syn','a1','a2','a3','a4','screen'].map(id=>document.getElementById(id));
+  const screenSec = document.getElementById('screen');
+  const actsNav = document.getElementById('acts');
+  function syncActs(){
+    let idx = 0;
+    marks.forEach((el,i)=>{ if(el && el.getBoundingClientRect().top <= innerHeight*0.55) idx = i; });
+    links.forEach((a,i)=> a.classList.toggle('on', i===idx));
+    // 进入胶片/海报/落版区域后收起侧栏，避免压在图上
+    const past = screenSec.getBoundingClientRect().bottom < innerHeight*0.45;
+    actsNav.style.opacity = past ? 0 : 1;
+    actsNav.style.pointerEvents = past ? 'none' : 'auto';
+  }
+  addEventListener('scroll', syncActs, {passive:true}); syncActs();
+
+  /* ---------- 0 dB · 静界（进入视口时 78 → 0，喧嚣 → 静界） ---------- */
+  const zen = document.getElementById('zen');
+  const zenDb = document.getElementById('zenDb');
+  const zenCap = document.getElementById('zenCap');
+  const zenHint = document.getElementById('zenHint');
+  const zenBgword = document.getElementById('zenBgword');
+  let zenDone = false;
+  const zenIo = new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(!e.isIntersecting || zenDone) return;
+      zenDone = true;
+      zen.querySelectorAll('.rv').forEach(el=> el.classList.add('in'));
+      const dur = 2200, t0 = performance.now();
+      (function tick(t){
+        const p = Math.min(1, (t - t0) / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        zenDb.textContent = Math.round(78 * (1 - eased));
+        if(p < 1) requestAnimationFrame(tick);
+        else{
+          zenDb.textContent = 0;
+          zenCap.textContent = '静界 · 内心平均噪音';
+          zenHint.innerHTML = '世界依然喧嚣，<b>但你可以拥有自己的宁静</b>';
+          zenBgword.textContent = '静界';
+        }
+      })(t0);
+      zenIo.disconnect();
+    });
+  },{threshold:.45});
+  zenIo.observe(zen);
+
+  /* ---------- 叠层：离开时轻微缩放 ---------- */
+  const acts = [...document.querySelectorAll('.act')];
+  function stackFx(){
+    acts.forEach((el,i)=>{
+      const next = acts[i+1];
+      if(!next) return;
+      const r = next.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, 1 - r.top / innerHeight));
+      el.style.transform = `scale(${1 - p*0.05})`;
+      el.style.filter = `brightness(${1 - p*0.45})`;
+    });
+  }
+  addEventListener('scroll', stackFx, {passive:true}); stackFx();
+
+  /* ---------- 放映模式 ---------- */
+  const theater = document.getElementById('theater');
+  const tv = document.getElementById('tv');
+  const tNow = document.getElementById('tNow');
+  const tAll = document.getElementById('tAll');
+  const tfg = document.getElementById('tfg');
+  const tdot = document.getElementById('tdot');
+  const trail = document.getElementById('trail');
+
+  const fmt = s => { s=Math.max(0,s||0); const m=Math.floor(s/60), ss=Math.floor(s%60); return String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0'); };
+
+  let hideTimer = null;
+  function showUI(){
+    theater.classList.add('show-ui');
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(()=> theater.classList.remove('show-ui'), 2600);
+  }
+  /* 放映期间隐藏父页（主站详情）左上角 CLOSE，避免误点整页退出；只留右上角“退出放映” */
+  function parentClose(hidden){
+    try{
+      var b = parent.document.getElementById('vhsClose');
+      if(b) b.style.visibility = hidden ? 'hidden' : '';
+    }catch(e){}
+  }
+  function openTheater(startAt){
+    theater.classList.add('on');
+    document.body.style.overflow='hidden';
+    tv.currentTime = startAt || 0;
+    tv.muted = false;
+    tv.play().catch(()=>{ tv.muted = true; tv.play().catch(()=>{}); });
+    parentClose(true);
+    showUI();
+  }
+  function closeTheater(){
+    theater.classList.remove('on','show-ui');
+    tv.pause();
+    document.body.style.overflow='';
+    parentClose(false);
+  }
+  addEventListener('pagehide', ()=> parentClose(false));
+
+  document.getElementById('enterBtn').addEventListener('click', ()=> openTheater(0));
+  document.getElementById('enterBtn2').addEventListener('click', ()=> openTheater(0));
+  document.getElementById('posterBox').addEventListener('click', ()=> openTheater(0));
+  document.getElementById('exitT').addEventListener('click', closeTheater);
+  document.querySelectorAll('#chapters button').forEach(b=>{
+    b.addEventListener('click', ()=> openTheater(parseFloat(b.dataset.t)));
+  });
+  addEventListener('keydown', e=>{ if(e.key === 'Escape' && theater.classList.contains('on')) closeTheater(); });
+
+  theater.addEventListener('mousemove', showUI);
+  theater.addEventListener('click', e=>{
+    if(e.target.closest('.tb')) return;
+    tv.paused ? tv.play() : tv.pause();
+    showUI();
+  });
+
+  tv.addEventListener('loadedmetadata', ()=>{ tAll.textContent = fmt(tv.duration); });
+  tv.addEventListener('timeupdate', ()=>{
+    const d = tv.duration || 180;
+    const p = tv.currentTime / d;
+    tfg.style.width = (p*100).toFixed(2)+'%';
+    tdot.style.left = (p*100).toFixed(2)+'%';
+    tNow.textContent = fmt(tv.currentTime);
+  });
+  tv.addEventListener('ended', ()=> closeTheater());
+
+  function seekTo(clientX){
+    const r = trail.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0,(clientX - r.left)/r.width));
+    if(tv.duration){ tv.currentTime = p * tv.duration; }
+    const q = tv.duration ? tv.currentTime / tv.duration : 0;
+    tfg.style.width = (q*100).toFixed(2)+'%';
+    tdot.style.left = (q*100).toFixed(2)+'%';
+    tNow.textContent = fmt(tv.currentTime);
+    showUI();
+  }
+  let scrubbing = false;
+  trail.addEventListener('pointerdown', e=>{
+    e.preventDefault();
+    scrubbing = true;
+    try{ trail.setPointerCapture(e.pointerId); }catch(err){}
+    seekTo(e.clientX);
+  });
+  trail.addEventListener('pointermove', e=>{ if(scrubbing) seekTo(e.clientX); });
+  trail.addEventListener('pointerup', ()=>{ scrubbing = false; });
+  trail.addEventListener('pointercancel', ()=>{ scrubbing = false; });
+
+  /* ---------- 预览静帧 ---------- */
+  const pv = document.getElementById('pv');
+  pv.addEventListener('loadedmetadata', ()=>{ try{ pv.currentTime = 6; }catch(e){} });
+})();
+</script>
+
+
+<script id="junxi-guard">
+/* 作品集图片保护：全站禁用右键菜单与「另存为」，表单/可编辑区除外 */
+(function(){
+  function guardDoc(doc){
+    if(!doc || doc.__jg) return;
+    try{ doc.__jg = 1; }catch(e){}
+    doc.addEventListener('contextmenu', function(e){
+      var t = e.target;
+      if(t && t.closest && t.closest('input,textarea,select,[contenteditable="true"]')) return;
+      e.preventDefault();
+    }, true);
+    doc.addEventListener('dragstart', function(e){ e.preventDefault(); }, true);
+    doc.addEventListener('keydown', function(e){
+      var k = (e.key || '').toLowerCase();
+      if((e.ctrlKey || e.metaKey) && (k === 's' || k === 'u' || k === 'p')) e.preventDefault();
+    }, true);
+  }
+  guardDoc(document);
+  function frames(){
+    var fs = document.querySelectorAll('iframe');
+    for(var i = 0; i < fs.length; i++){
+      var f = fs[i];
+      if(!f.__jgHooked){
+        f.__jgHooked = 1;
+        f.addEventListener('load', function(){ try{ guardDoc(this.contentDocument); }catch(e){} });
+      }
+      try{ guardDoc(f.contentDocument); }catch(e){}
+    }
+  }
+  frames();
+  setInterval(frames, 700);
+})();
+</script></body></html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html data-page-node-id="ZadRRTjA4nQpAb1NqKmxm3" lang="zh-CN">
+<head data-page-node-id="nNsiEKvWhltcKNLvcggsBZ">
+<script data-page-node-id="3pfgIiidXoIC1TySfuJFKH" src="/page/page_comm/inject.js"></script>
+<meta data-page-node-id="TlZ0MGvIvHgzcAPirTpzpr" charset="utf-8">
+<meta data-page-node-id="WPaaLONidL4gVEj5GQIOvD" content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport">
+<title data-page-node-id="62G8hzoO9nTBHxdLZGmlKK" data-pnid-children="5E1Rr7WUjiusaxsZXvQsBS">荒岛上最后的希望 — 刘书君作品集</title>
+<style data-page-node-id="FNhXLmXYEbgjGF2lbm8b2T" data-pnid-children="XLVeUdxTg2hngnDc8mDiYd">
+  :root{
+    --bg:#06080a;
+    --ink:#f4f0e6;
+    --dim:rgba(244,240,230,.62);
+    --faint:rgba(244,240,230,.34);
+    --gold:#E8C877;
+    --teal:#6FC9CB;
+    --ease:cubic-bezier(.22,.61,.36,1);
+    --pad:clamp(22px,5vw,84px);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);overflow-x:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.75}
+  img,video{display:block;max-width:100%}
+  ::selection{background:rgba(232,200,119,.3)}
+  .serif{font-family:"Songti SC","Source Han Serif SC","Noto Serif SC",Georgia,serif}
+
+  #prog{position:fixed;top:0;left:0;height:2px;width:0;z-index:60;
+    background:linear-gradient(90deg,var(--gold),#fff3d0);box-shadow:0 0 14px rgba(232,200,119,.55)}
+
+  #tag{position:fixed;top:22px;left:calc(var(--pad) + 132px);z-index:50;display:flex;align-items:center;gap:12px;
+    font-size:10px;letter-spacing:.42em;color:var(--faint);transition:opacity .5s var(--ease)}
+  #tag b{font-weight:500;color:var(--ink);letter-spacing:.3em}
+  #tag i{width:26px;height:1px;background:currentColor;display:block}
+
+  /* ───── HERO ───── */
+  .hero{position:relative;height:100svh;min-height:560px;overflow:hidden;background:#000}
+  .hero-media{position:absolute;inset:0;will-change:transform}
+  .hero-media img{width:100%;height:100%;object-fit:cover;object-position:center 44%;
+    animation:kb 22s ease-out forwards}
+  @keyframes kb{from{transform:scale(1.04)}to{transform:scale(1)}}
+  .hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(180deg,rgba(4,6,8,.42) 0%,rgba(4,6,8,.04) 22%,rgba(4,6,8,0) 42%,rgba(4,6,8,.62) 74%,rgba(4,6,8,.92) 100%),linear-gradient(90deg,rgba(4,6,8,.5),rgba(4,6,8,.08) 38%,transparent 62%)}
+  .hero-in{position:absolute;left:var(--pad);right:var(--pad);bottom:clamp(56px,8vh,96px);z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap}
+  .hero-kick{font-size:10px;letter-spacing:.5em;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:14px}
+  .hero-kick::before{content:"";width:42px;height:1px;background:var(--gold)}
+  .hero h1{font-size:clamp(34px,5.4vw,78px);line-height:1.06;letter-spacing:.05em;font-weight:700;
+    text-shadow:0 10px 50px rgba(0,0,0,.6)}
+  .hero h1 em{display:block;font-style:normal;font-family:inherit;font-size:clamp(10px,.95vw,12px);
+    letter-spacing:.46em;color:var(--dim);margin-top:18px;text-shadow:none;font-weight:400}
+  .hero-side{text-align:right}
+  .hero-date{font-size:clamp(13px,1.2vw,16px);letter-spacing:.14em;color:var(--ink)}
+  .hero-date b{font-weight:600;color:var(--gold);letter-spacing:.06em}
+  .hero-side p{margin-top:10px;font-size:11px;letter-spacing:.3em;color:var(--faint)}
+  .hero-cta{display:inline-flex;align-items:center;gap:12px;margin-top:22px;padding:12px 22px 12px 24px;
+    border:1px solid rgba(244,240,230,.34);border-radius:999px;color:var(--ink);text-decoration:none;
+    font-size:12px;letter-spacing:.24em;transition:.4s var(--ease);background:rgba(6,8,10,.3);backdrop-filter:blur(6px)}
+  .hero-cta:hover{border-color:var(--gold);color:var(--gold);background:rgba(232,200,119,.12);transform:translateY(-2px)}
+  .hero-cta svg{width:12px;height:12px;fill:currentColor}
+  .cue{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;
+    font-size:9px;letter-spacing:.4em;color:var(--faint)}
+  .cue i{width:1px;height:26px;background:linear-gradient(180deg,var(--gold),transparent);animation:cue 2.4s ease-in-out infinite;transform-origin:top}
+  @keyframes cue{0%,100%{transform:scaleY(.3);opacity:.5}50%{transform:scaleY(1);opacity:1}}
+
+  /* ───── 通用 ───── */
+  .wrap{max-width:1320px;margin:0 auto;padding:0 var(--pad)}
+  .slab{display:flex;align-items:baseline;gap:18px;font-size:10px;letter-spacing:.44em;color:var(--gold);margin-bottom:clamp(30px,5vw,58px)}
+  .slab span{color:var(--faint);letter-spacing:.3em}
+  .slab::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(244,240,230,.18),transparent)}
+
+  /* ───── 简介 ───── */
+  .syn{padding:clamp(90px,14vh,170px) 0 clamp(70px,10vh,120px);
+    background:radial-gradient(120% 80% at 80% 0%,rgba(111,201,203,.08),transparent 60%),var(--bg)}
+  .syn .lead{font-size:clamp(22px,3vw,40px);line-height:1.5;letter-spacing:.04em;max-width:22em;
+    margin-bottom:clamp(44px,7vh,80px)}
+  .syn .lead b{color:var(--gold);font-weight:400}
+  .syn-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:clamp(28px,6vw,90px)}
+  .syn-note{font-size:12px;letter-spacing:.06em;color:var(--dim);line-height:2.3}
+  .syn-note b{display:block;font-size:10px;letter-spacing:.36em;color:var(--gold);margin-bottom:4px;margin-top:14px;font-weight:500}
+  .syn-note b:first-child{margin-top:0}
+  .syn-body p{font-size:clamp(14px,1.15vw,16.5px);line-height:2.05;color:var(--dim);margin-bottom:1.5em;max-width:38em}
+  
+  .syn-body em{color:var(--teal);font-style:normal}
+
+  /* ───── 海报 ───── */
+  .art{padding:clamp(46px,7vh,96px) 0;background:#040607}
+  .art-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2vw,28px)}
+  .art figure{position:relative;overflow:hidden;cursor:zoom-in;background:#0a0c0e}
+  .art figure img{width:100%;aspect-ratio:16/9;object-fit:cover;transition:transform 1.1s var(--ease),filter .6s}
+  .art figure:hover img{transform:scale(1.035);filter:brightness(1.05)}
+  .art figcaption{position:absolute;left:18px;bottom:14px;font-size:10px;letter-spacing:.34em;color:rgba(244,240,230,.82);
+    text-shadow:0 2px 12px rgba(0,0,0,.8)}
+  .art figure::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(180deg,transparent 55%,rgba(4,6,8,.55));opacity:.9;transition:opacity .5s}
+  .art figure:hover::after{opacity:.4}
+
+  /* ───── 正片 ───── */
+  .film{padding:clamp(46px,7vh,88px) 0 clamp(80px,12vh,140px);background:#06080a}
+  .film-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(22px,4vh,40px);flex-wrap:wrap}
+  .film-head h2{font-size:clamp(24px,2.8vw,38px);letter-spacing:.06em;font-weight:600}
+  .film-head p{font-size:11px;letter-spacing:.3em;color:var(--faint)}
+  .player{position:relative;aspect-ratio:16/9;background:#000;overflow:hidden;cursor:pointer;
+    box-shadow:0 40px 120px rgba(0,0,0,.6)}
+  .player video{width:100%;height:100%;object-fit:cover;background:#000}
+  .pl-big{position:absolute;inset:0;display:grid;place-items:center;transition:opacity .45s var(--ease);
+    background:rgba(4,6,8,.18)}
+  .pl-big.gone{opacity:0;pointer-events:none}
+  .pl-big span{width:88px;height:88px;border-radius:50%;border:1px solid rgba(244,240,230,.6);
+    display:grid;place-items:center;background:rgba(6,8,10,.34);backdrop-filter:blur(8px);transition:.4s var(--ease)}
+  .pl-big:hover span{transform:scale(1.06);border-color:var(--gold);background:rgba(232,200,119,.18)}
+  .pl-big svg{width:24px;height:24px;fill:#fff;margin-left:4px}
+  .pl-bar{position:absolute;left:0;right:0;bottom:0;padding:16px 18px 10px;
+    display:flex;align-items:center;gap:16px;opacity:0;transform:translateY(8px);
+    transition:opacity .35s var(--ease),transform .35s var(--ease);
+    background:linear-gradient(180deg,transparent,rgba(4,6,8,.82))}
+  .player:hover .pl-bar{opacity:1;transform:none}
+  .pl-bar button{appearance:none;border:0;background:none;color:rgba(244,240,230,.86);cursor:pointer;width:28px;height:28px;display:grid;place-items:center;padding:0}
+  .pl-bar button:hover{color:#fff}
+  .pl-bar svg{width:15px;height:15px;fill:currentColor}
+  .player.is-fs{position:fixed;inset:0;z-index:9999;aspect-ratio:auto;box-shadow:none}
+  .player.is-fs video{object-fit:contain}
+  .player.is-fs .pl-bar{opacity:1;transform:none}
+  #btnFs{margin-left:2px}
+  /* 全屏播放时：父页左上角 CLOSE 会被隐藏，右上角常驻「退出全屏」 */
+  .fs-exit{position:fixed;top:clamp(14px,2.4vw,24px);right:clamp(14px,2.4vw,28px);z-index:10000;
+    display:none;align-items:center;gap:9px;height:34px;padding:0 15px;border-radius:999px;
+    border:1px solid rgba(244,240,230,.34);background:rgba(6,8,10,.52);color:rgba(244,240,230,.92);
+    cursor:pointer;font:inherit;font-size:11px;letter-spacing:.2em;
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:.35s var(--ease)}
+  .fs-exit:hover{border-color:var(--gold);color:var(--gold);background:rgba(232,200,119,.16)}
+  .fs-exit i{font-style:normal;font-size:9px;letter-spacing:.12em;color:rgba(244,240,230,.48);
+    border:1px solid rgba(244,240,230,.28);border-radius:4px;padding:2px 5px}
+  .player.is-fs .fs-exit{display:inline-flex}
+  .player.is-fs.fs-idle .fs-exit{opacity:.62}
+  .player.is-fs.fs-idle{cursor:none}
+  .player.is-fs.fs-idle .pl-bar{opacity:0}
+  .pl-track{position:relative;flex:1;height:14px;display:flex;align-items:center;cursor:pointer;touch-action:none}
+  .pl-track i{position:absolute;left:0;right:0;height:2px;background:rgba(255,255,255,.22)}
+  .pl-track b{position:absolute;left:0;height:2px;width:0;background:var(--gold)}
+  .pl-time{font-size:11px;letter-spacing:.12em;color:rgba(244,240,230,.66);font-variant-numeric:tabular-nums}
+  .pl-note{margin-top:16px;font-size:11px;letter-spacing:.26em;color:var(--faint);display:flex;gap:18px;flex-wrap:wrap}
+  .pl-note b{color:var(--dim);font-weight:400}
+
+  /* ───── 片尾 ───── */
+  .credits{padding:clamp(70px,10vh,120px) 0 clamp(60px,9vh,100px);background:linear-gradient(180deg,#06080a,#040507)}
+  .cr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:clamp(26px,4vw,44px)}
+  .cr-grid div{font-size:12.5px;line-height:2.1;color:var(--dim);letter-spacing:.06em}
+  .cr-grid b{display:block;font-size:10px;letter-spacing:.36em;color:var(--gold);margin-bottom:8px;font-weight:500}
+  .cr-end{margin-top:clamp(50px,8vh,80px);padding-top:26px;border-top:1px solid rgba(244,240,230,.1);
+    display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:10px;letter-spacing:.3em;color:var(--faint)}
+
+  /* ───── 灯箱 ───── */
+  #lb{position:fixed;inset:0;z-index:200;background:rgba(4,5,7,.94);display:grid;place-items:center;
+    opacity:0;pointer-events:none;transition:opacity .4s var(--ease);padding:4vh 4vw}
+  #lb.on{opacity:1;pointer-events:auto}
+  #lb img{max-width:100%;max-height:88vh;object-fit:contain;transform:scale(.97);transition:transform .5s var(--ease)}
+  #lb.on img{transform:none}
+  #lbClose{position:absolute;top:18px;right:22px;border:1px solid rgba(244,240,230,.3);background:none;
+    color:rgba(244,240,230,.8);padding:8px 16px;border-radius:999px;font-size:10px;letter-spacing:.24em;cursor:pointer}
+
+  /* ───── 出场 ───── */
+  [data-r]{opacity:0;transform:translateY(26px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+  [data-r].in{opacity:1;transform:none}
+  [data-r="2"]{transition-delay:.1s}[data-r="3"]{transition-delay:.2s}[data-r="4"]{transition-delay:.3s}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    [data-r]{opacity:1;transform:none;transition:none}
+    .hero-media img{animation:none}
+    .cue i{animation:none}
+  }
+  @media(max-width:860px){
+    #tag{display:none}
+    .syn-grid{grid-template-columns:1fr}
+    .art-grid{grid-template-columns:1fr}
+    .turn-grid{grid-template-columns:1fr;gap:26px}
+    .turn{padding:44px 0 56px}
+    /* 竖屏：海报按原比例放在顶部，文字接在下面（不再裁切） */
+    .hero{height:auto;min-height:0;display:block;padding-top:0}
+    .hero-media{position:relative;inset:auto}
+    .hero-media img{height:auto;aspect-ratio:16/9;object-fit:cover;animation:none}
+    .hero::after{background:linear-gradient(180deg,rgba(4,6,8,.45),transparent 30%)}
+    .hero-in{position:static;left:auto;right:auto;bottom:auto;display:block;
+      padding:26px var(--pad) 46px}
+    .hero-side{text-align:left;margin-top:22px}
+    .hero-cta{margin-top:14px}
+    .cue{display:none}
+    .film-head{flex-direction:column;align-items:flex-start;gap:10px}
+    .pl-note{gap:10px}
+  }
+</style>
+</head>
+<body data-page-node-id="oFOKxNqeAgeaW8lgjGrPrv">
+<div data-page-node-id="bsevNt5V6NDbWGbZNL0rat" id="prog"></div>
+<div data-page-node-id="qPa7s2HBWStAM2Qh4jBYkE" id="tag"><span data-page-node-id="yZ6BPQsKhqfB0q3Oxut32z"><!--pnid:n3cV9C8Ymo1YlLawq2tQuP-->SHORT FILM</span><i data-page-node-id="Ll6oJcH9V3OCN13DHEKMiE"></i><b data-page-node-id="4UFb42vOuLJIt1np7Cxvvh"><!--pnid:PsIiJma8htRZyvdhVKU3z5-->荒岛上最后的希望</b></div>
+
+<header data-page-node-id="EfPWcr7XMoAr6PYSqZ2VnB" class="hero">
+  <div data-page-node-id="oRERZrLwFzmajUXvaWT8Iy" class="hero-media" id="heroMedia"><img data-page-node-id="q7KoLeyTAP7bZ8uObv0EfC" alt="荒岛上最后的希望 · 剧照" fetchpriority="high" src="./hero.webp"></div>
+  <div data-page-node-id="0d6w6pzluC78TUpXcvYJSI" class="hero-in">
+    <div data-page-node-id="CXOxopbRKRLhiK1lULy901">
+      <div data-page-node-id="4AxXONndvNwVNFnmz46SWu" class="hero-kick"><!--pnid:9kCcnVXE7TJ5G2CiAo89no-->刘君君 导演作品</div>
+      <h1 data-page-node-id="P03jQYLrY3LarORIT0zagb" class="serif"><!--pnid:0F5gcW2acV7z7gIBpmZvT2-->荒岛上最后的希望<em data-page-node-id="xY9twg7bLox0NPsN52baKN"><!--pnid:RRnDvI2AU5lrm6nul9hV5a-->THE LAST HOPE ON THE ISLAND</em></h1>
+    </div>
+    <div data-page-node-id="hJl0gSs6p4G7CX068XcP4J" class="hero-side">
+      <div data-page-node-id="bdI2E49fSWvnCoEch2G81d" class="hero-date"><b data-page-node-id="OG7NG9nXFosqpdnfCZ9jrC"><!--pnid:MMWVRwWYqjJObyWEDfmBe4-->11月31日</b><!--pnid:Ur9FO7GSjzjQsHzukk0fEJ-->　首播</div>
+      <p data-page-node-id="jP145eWswcZxH7KZz6MXOl"><!--pnid:1poi7rmrrsbpJPtH2llGrE-->动画广告　·　片长 02:35</p>
+      <a data-page-node-id="jHtBpL7gMT1nIResXJcGw3" class="hero-cta" href="#film"><!--pnid:KXmQzabcsyeYQHYfCWwbzp-->观看正片
+        <svg data-page-node-id="CqaEQXQ6xwxUjOdAcqSmKw" viewBox="0 0 24 24"><path data-page-node-id="10iubPkycSnFTj6uyPZbon" d="M8 5v14l11-7z"/></svg>
+      </a>
+    </div>
+  </div>
+  <div data-page-node-id="P6bLBFqlNMEclkdJEai9k2" class="cue"><span data-page-node-id="fKPk4cOSlbbzoZjkRbqX82"><!--pnid:4PTerBHxFx8ng51wxImfxe-->SCROLL</span><i data-page-node-id="JRriH1ZeMsEKGj1uyYyj9A"></i></div>
+</header>
+
+<section data-page-node-id="kTVi36CUFSjctaFjfAUF58" class="syn" id="syn">
+  <div data-page-node-id="taAGb02XnyXthkVolE8gB7" class="wrap">
+    <div data-page-node-id="zbIUreLaJcZCAAVRObuLy5" class="slab"><!--pnid:VOiXrRYKE3lEJhscTWwSxc-->SYNOPSIS<span data-page-node-id="rWTDLEtdbGrlfAsguuSUvx"><!--pnid:qff668ls6i8F6d462Y0V6G-->剧情</span></div>
+    <p data-page-node-id="uCWSDTGypq79hwBKfNs6q7" class="lead" data-r><!--pnid:g9bDdLPxyd0QtsEh4OSJHU-->《荒岛上的希望》短片简介</p>
+    <div data-page-node-id="zTAwQXMEUQd281Cw1Jvj7H" class="syn-grid">
+      <div data-page-node-id="DrHyTHzrpqJU8jhT5j4z0v" class="syn-note" data-r="2">
+        <b data-page-node-id="MJ3WE0MeWXQtR5knlfhs6B"><!--pnid:TohIsc0IdaQihliSjkyeiD-->类型</b><!--pnid:xY1TIB29y3C5C8Asg9mdLM-->AI 动画 / 荒岛喜剧<br data-page-node-id="wFIrVAr2C452CbKeXyXTZi">
+        <b data-page-node-id="ZbkAQbKuN5Hq1ofzP4kNcN"><!--pnid:Vku0qo1ce7vsGsEz1wFXBi-->片长</b><!--pnid:UQvWIHMXfJqazAbY8JWHNR-->02:35<br data-page-node-id="xHTWNSYXIfEi7OYEQzYXCN">
+        <b data-page-node-id="uixRDNMc1JbqO8FOKBU3HH"><!--pnid:zhKzXItKJ6OiRE6MmwACGu-->首播</b><!--pnid:Ah1eccJ9fjmvPt4hFDCnyS-->11 月 31 日<br data-page-node-id="iksUqDhFCGucYGELBF7nKp">
+        <b data-page-node-id="UmyvGZM68DJ1gQd5PPhL8w"><!--pnid:NbeUHFrtWFIrqn0qKMEnah-->品牌</b><!--pnid:3mUtAmO85EqndGUk3YIyrZ-->if LOCAL SENSATION
+      </div>
+      <div data-page-node-id="pmJI2DSS1isVaIHqHX18TW" class="syn-body">
+        <p data-page-node-id="cpQScRN1uupAf9Sg348kOt" data-r="2"><!--pnid:G3hKwoAySdXPObysoUHNvy-->一场意外，一高一矮、一胖一瘦的两个倒霉蛋被海浪冲上了荒岛。</p>
+        <p data-page-node-id="NFEOhCMqyYgyekuJY5ON9L" data-r="2"><!--pnid:VdTqbAFxWxixbH8qrBVpDv-->面对陌生的环境，两人开启了一场状况百出的荒野求生之旅。</p>
+        <p data-page-node-id="EloTB8FMpxjyXmsBx7LpGl" data-r="3"><!--pnid:XdwsIH8YUpy6uVQyxdiFZZ-->从艰难寻找食物，到终于在椰子树下喝上期待已久的椰子水，他们的荒岛生活总算迎来了转机。</p>
+        <p data-page-node-id="czBv6EOAwu2Htfuathd67r" data-r="4"><!--pnid:cye1FCtukknRADytkzmdAw-->然而，当两人发现椰子已经喝空，正意犹未尽时，海浪却意外送来了新的惊喜——<em data-page-node-id="1p9dPa2YwD1z9yyxWvVZdH"><!--pnid:vLvUJQCBlVJAIwflNBI0qJ-->if LOCAL SENSATION 椰子水</em><!--pnid:McYYpsJBiwaalV4WKj5T9Q-->！</p>
+        <p data-page-node-id="KSGcl5qqFlJUXIrCzyAD5Z" data-r="4"><!--pnid:PJtQmtuj7k3lUip4QDWGyd-->一口清爽之后，刷新了他们的一天，眼前的荒岛仿佛瞬间变成了度假天堂：破旧衣服变成夏威夷花衬衫，狼狈的求生者变成悠闲的度假客。两个原本疲惫不堪的搭档，就这样开启了一场意想不到的海岛假期。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-page-node-id="rfwWzlxIFGOAY3r1xMYTYw" class="art" id="art">
+  <div data-page-node-id="mhTxW3uY9izDIcZeLXtAyA" class="wrap">
+    <div data-page-node-id="waBmyleAbHHc9w6zAbL5ZT" class="slab"><!--pnid:1Qkrd7Tavq4ZcCYwUmiWVI-->KEY ART<span data-page-node-id="XveF5r8PxKfwikroWASJTr"><!--pnid:CM4a1jxmaLmOWANinZE1As-->海报</span></div>
+    <div data-page-node-id="Yegt5BJI7LZhWInhWwTtJz" class="art-grid">
+      <figure data-page-node-id="F9bHHCQXJHueS267SmYKYD" data-r data-src="./kv.webp">
+        <img data-page-node-id="I0fv6WSBLQo6P4r9lwQ3yY" alt="定档海报 · 11月31日 首播" loading="lazy" src="./kv.webp">
+        <figcaption data-page-node-id="v2qpEq7vDkPIVzvriLQ0eW"><!--pnid:6KviQJKNjEp2cINjHxdMEW-->定档海报 / KEY VISUAL</figcaption>
+      </figure>
+      <figure data-page-node-id="FwjzSr9pLY07rti2IITcvU" data-r="2" data-src="./kv-product.webp">
+        <img data-page-node-id="NiBRyzAXCkOwfjFjWHBboy" alt="品牌联名海报 · if LOCAL SENSATION 椰子水" loading="lazy" src="./kv-product.webp">
+        <figcaption data-page-node-id="bfQBnJ2qEGvJvlg2OiLJPP"><!--pnid:42rMfQOK2vp4lnirPo0KiW-->联名海报 / BRAND KV</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section data-page-node-id="Zhz3tSECucLMlNzQNLALTT" class="film" id="film">
+  <div data-page-node-id="S7wCSl6yZROUI842nzQ0uD" class="wrap">
+    <div data-page-node-id="CW07vWpnVsww6vqkVPAnUL" class="slab"><!--pnid:dTZ3WITOryJXebpAv7wR8H-->THE FILM<span data-page-node-id="wwyrANcAQ7u9aO9CddO5Tt"><!--pnid:Kc4ErrUuNomdUEYjqQENAZ-->正片</span></div>
+    <div data-page-node-id="vZMX4viXYyCA2faBUFIQNY" class="film-head">
+      <h2 data-page-node-id="rhdMIWROF6mX6VhnVBxwV3" class="serif" data-r><!--pnid:PKWBLpLh36EteE9EFGaqvL-->荒岛上最后的希望</h2>
+      <p data-page-node-id="Vu93Mz1QY3GWcsOM5INGwE" data-r="2"><!--pnid:kzfmBMgi20W3bTyEBd76F9-->02:35 · 1280×720 · 有对白与音效</p>
+    </div>
+    <div data-page-node-id="eyuN7EZUKJhRGDWvFsci7z" class="player" id="player">
+      <video data-page-node-id="a4u6gteL2VjdBik6VNqPq6" id="vid" playsinline poster="./film-poster.webp" preload="metadata" webkit-playsinline>
+        <source data-page-node-id="J9US8DxY6b8Gf5gpisIP1P" src="./film.mp4" type="video/mp4">
+      </video>
+      <div data-page-node-id="2cGAmSuXaViR9MU5CSXs1B" class="pl-big" id="plBig"><span data-page-node-id="AzgD6MWyvuGc4rf65fxVmH"><svg data-page-node-id="rLKmkV7WaS29kXEoNVJcBi" viewBox="0 0 24 24"><path data-page-node-id="hVju0q3tJ6Mv7KlTinVJIx" d="M8 5v14l11-7z"/></svg></span></div>
+      <div data-page-node-id="ssgfmeJY4mATgDbrekNlOF" class="pl-bar" id="plBar">
+        <button data-page-node-id="2GidTaH93k7XhxT6lVJGGp" aria-label="播放 / 暂停" id="btnPlay">
+          <svg data-page-node-id="rQzTrVS8OuXZT1WyC4Dt6Q" id="iPlay" viewBox="0 0 24 24"><path data-page-node-id="PMPz3yhRWoqVQVkXstQ5y3" d="M8 5v14l11-7z"/></svg>
+          <svg data-page-node-id="HWKGu774BVHaWZYzLXbWCx" id="iPause" viewBox="0 0 24 24" style="display:none"><path data-page-node-id="u1py72BGvarlvmxAOfUZlh" d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
+        </button>
+        <div data-page-node-id="A8APZ8r7aSRp2qM4zVan1g" class="pl-track" id="plTrack"><i data-page-node-id="Is9NxvVWL8U5WaDi9KOSyz"></i><b data-page-node-id="C03clrcFYbt83pbkubyJ9z" id="plFill"></b></div>
+        <div data-page-node-id="K9XKxYjpq7xlYF81AFNl61" class="pl-time" id="plTime"><!--pnid:pxy62aLc1o6OGPCrcIiIh6-->00:00 / 02:35</div>
+        <button data-page-node-id="teUYz8BUHoWKIvTeDWNWbd" aria-label="静音" id="btnMute">
+          <svg data-page-node-id="izYgWlqZONYsTXAg09o3XI" id="iMute" viewBox="0 0 24 24" style="display:none"><path data-page-node-id="s25n02ibdFbWJH6YfNjkR0" d="M4 9v6h4l5 4V5L8 9H4zm11.6 3 2.2-2.2-1.1-1.1-2.2 2.2-2.2-2.2-1.1 1.1 2.2 2.2-2.2 2.2 1.1 1.1 2.2-2.2 2.2 2.2 1.1-1.1z"/></svg>
+          <svg data-page-node-id="uOFo0STOwpTxJI6O6dqeOm" id="iSound" viewBox="0 0 24 24"><path data-page-node-id="PfEr6bMeJx0kyrSlCQ2E2n" d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>
+        </button>
+        <button data-page-node-id="Gzi08Mc4pOtZjZDWgSNSlM" aria-label="全屏播放" id="btnFs" title="全屏">
+          <svg data-page-node-id="i3eysiBM7zIqQwE2vIjpXG" id="iFs" viewBox="0 0 24 24"><path data-page-node-id="FfeiwRxZ15Wz8ceK3i2ZBZ" d="M4 9V4h5v2H6v3H4zm11-5h5v5h-2V6h-3V4zM4 15h2v3h3v2H4v-5zm14 0h2v5h-5v-2h3v-3z"/></svg>
+          <svg data-page-node-id="mLeTT895H4dombRmdMaTvi" id="iFsExit" viewBox="0 0 24 24" style="display:none"><path data-page-node-id="8Lo2CPmp5GljRQ0Db7sXkp" d="M9 4v5H4V7h3V4h2zm6 0h2v3h3v2h-5V4zM4 15h5v5H7v-3H4v-2zm11 0h5v2h-3v3h-2v-5z"/></svg>
+        </button>
+      </div>
+      <button class="fs-exit" id="fsExit" type="button">退出全屏<i>ESC</i></button>
+    </div>
+    <div data-page-node-id="QZnUx94bYI7D3zwPl007HA" class="pl-note">
+      <span data-page-node-id="bwoY9QlE0FWPs1cmD1FHPc"><b data-page-node-id="Bic7qYSjSGAIKwKwN9WnHr"><!--pnid:iyw0PmQf4AMaSUvQ5HyffP-->导演</b><!--pnid:8AjbEc3uZiyMwjPVix8yVF--> 刘君君</span>
+      <span data-page-node-id="RUnBSjDmji85fDBeiD9984"><b data-page-node-id="ysPXNz8hY7jPG5IioPxKyH"><!--pnid:AfD6GEshUTO3BkUog1nREZ-->出品</b><!--pnid:YoaXFgsvv2rYtHQz60YeY2--> 东方影画 · 华人影星 · 猫眼电影</span>
+      <span data-page-node-id="ZCT513YmBvC58zxQ6zIkhy"><b data-page-node-id="4SCB5oa03kPJ3E4OFWKYpn"><!--pnid:IMy4TZ6sUWAJjMjeRNMCRd-->发行</b><!--pnid:PnMTNJh9GjiEiUwekZzRPa--> 瑞映发行 · 橙光影业 · 中影集团</span>
+    </div>
+  </div>
+</section>
+
+<section data-page-node-id="79g94xXIMhPGzrz1R01HYi" class="credits">
+  <div data-page-node-id="HT8aPgKW5E89soGCQS68WA" class="wrap">
+    <div data-page-node-id="LZkPxfE6sbQKcDHDgO85Ch" class="slab"><!--pnid:qdQX7WmSCl46pnkLPIAh8S-->CREDITS<span data-page-node-id="Eu7yCCL8hTSZpldvbCDEF4"><!--pnid:vqG6ZuhhwUiBacvBFOn73h-->片尾</span></div>
+    <div data-page-node-id="ubOgLR5XBuUHChsR5KWfvC" class="cr-grid">
+      <div data-page-node-id="2sDcvbi1GHuyW9Z3hrXbHa" data-r><b data-page-node-id="In8af8ezONQI4knM0ABYkM"><!--pnid:4Y1wPER6rOHozyAUlvuYsG-->导演</b><!--pnid:VqCANiavhDlqnEC9AYkK8D-->刘君君</div>
+      <div data-page-node-id="QpEQLdVX5nLNg2znilSGNj" data-r="2"><b data-page-node-id="UHZb76o84HQPt9aCxqzz76"><!--pnid:LzV4q0QvOC5OqvCldvAPrh-->类型</b><!--pnid:Fz6iVuxUAgDd6XWkj0diFy-->AI 动画短片<br data-page-node-id="X0zbY5N16y1LwfyR0HsOwu"><!--pnid:bAbEMIDz68sLk7vFJjALGd-->荒岛喜剧 · 品牌联名</div>
+      <div data-page-node-id="9uIlWKdVksWuKlBm7VRV22" data-r="3"><b data-page-node-id="gqpsR2B3bRRLytFGu0rS9H"><!--pnid:QJYx99WpNnH2UihiKsoke4-->品牌</b><!--pnid:r4Lgk6dswQ24aazFD5aGeQ-->if LOCAL SENSATION<br data-page-node-id="TsLzPz0WKbzWF80z2E6YCw"><!--pnid:BClgegKlDUpfp8sJ2vMqAB-->100% Coconut Water</div>
+      <div data-page-node-id="9u389lFPiFFyqfPgge6NdO" data-r="4"><b data-page-node-id="u1U6aE9P82In3xvR2SpjjH"><!--pnid:zV769vSBfrwFWLriTvDpLZ-->形式</b><!--pnid:lqIiAGstrMKxiWStJbHnwH-->动画广告 / 品牌联名</div>
+    </div>
+    <div data-page-node-id="EcLoDPETQU74OvpCkEUyX6" class="cr-end">
+      <span data-page-node-id="43TnLSLxLysaT9l0UW4SPT"><!--pnid:HybcUX8Ik0ylv03z7ov6jz-->© 2026 刘书君 · 荒岛上最后的希望</span>
+      <span data-page-node-id="1bidKtTQ4YICTN0zyQvZeG"><!--pnid:9qZxCqslNPHadtTqQQgmo5-->SHORT FILM · 02:35</span>
+    </div>
+  </div>
+</section>
+
+<div data-page-node-id="BwNBoixBpytx3HJuneveMh" id="lb"><button data-page-node-id="oPdAkak379kdaSjJ2W3WDM" id="lbClose"><!--pnid:aNNkYrxvI1Pk4XY5nY1N68-->CLOSE</button><img data-page-node-id="GyBMvXTmLkz7cOaSZ7WXxK" alt id="lbImg"></div>
+
+<script data-page-node-id="y1jCWrJf8KLgTEhqRZAAjP" data-pnid-children="uhZJLIKaOD4v71P1oqjRP7">
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = s => document.querySelector(s);
+
+  const targets = document.querySelectorAll('[data-r]');
+  if ('IntersectionObserver' in window && !reduce) {
+    const io = new IntersectionObserver(es => {
+      es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: .16, rootMargin: '0px 0px -8% 0px' });
+    targets.forEach(t => io.observe(t));
+  } else {
+    targets.forEach(t => t.classList.add('in'));
+  }
+
+  const prog = $('#prog'), heroMedia = $('#heroMedia');
+  let ticking = false;
+  function onScroll() {
+    const y = scrollY, h = document.documentElement.scrollHeight - innerHeight;
+    prog.style.width = (h > 0 ? Math.min(1, y / h) * 100 : 0) + '%';
+    if (!reduce) {
+      if (y < innerHeight * 1.2) heroMedia.style.transform = 'translate3d(0,' + (y * .18) + 'px,0)';
+    }
+    ticking = false;
+  }
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  onScroll();
+
+  const lb = $('#lb'), lbImg = $('#lbImg');
+  document.querySelectorAll('.art figure').forEach(f => {
+    f.addEventListener('click', () => { lbImg.src = f.dataset.src; lb.classList.add('on'); });
+  });
+  function closeLb() { lb.classList.remove('on'); }
+  lb.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
+  $('#lbClose').addEventListener('click', closeLb);
+  addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+
+  const v = $('#vid'), player = $('#player'), big = $('#plBig');
+  const fill = $('#plFill'), track = $('#plTrack'), timeEl = $('#plTime');
+  const iPlay = $('#iPlay'), iPause = $('#iPause'), iMute = $('#iMute'), iSound = $('#iSound');
+  const fmt = s => { if (!isFinite(s)) s = 0; const m = Math.floor(s / 60), x = Math.floor(s % 60); return (m < 10 ? '0' : '') + m + ':' + (x < 10 ? '0' : '') + x; };
+
+  function paint() {
+    const d = v.duration || 0, p = d ? v.currentTime / d : 0;
+    fill.style.width = (p * 100) + '%';
+    timeEl.textContent = fmt(v.currentTime) + ' / ' + fmt(d || 155);
+  }
+  function syncIcons() {
+    const paused = v.paused;
+    iPlay.style.display = paused ? '' : 'none';
+    iPause.style.display = paused ? 'none' : '';
+    iMute.style.display = v.muted ? '' : 'none';
+    iSound.style.display = v.muted ? 'none' : '';
+    big.classList.toggle('gone', !paused || v.currentTime > .05);
+  }
+  function play() { v.muted = false; v.play().catch(() => { v.muted = true; v.play().catch(() => {}); }); }
+  function toggle() { v.paused ? play() : v.pause(); }
+
+  big.addEventListener('click', e => { e.stopPropagation(); play(); });
+  v.addEventListener('click', toggle);
+  $('#btnPlay').addEventListener('click', e => { e.stopPropagation(); toggle(); });
+  $('#btnMute').addEventListener('click', e => { e.stopPropagation(); v.muted = !v.muted; syncIcons(); });
+  // ── 全屏（iframe 内被拒时降级为伪全屏）──
+  const iFs = $('#iFs'), iFsExit = $('#iFsExit');
+  function isFs() { return document.fullscreenElement === player || player.classList.contains('is-fs'); }
+  var fsLast = null;
+  function paintFs() {
+    const on = isFs();
+    iFs.style.display = on ? 'none' : '';
+    iFsExit.style.display = on ? '' : 'none';
+    if (on !== fsLast) {
+      fsLast = on;
+      try { parent.postMessage({ type: 'junxi:player-fs', on: on }, '*'); } catch (e) {}
+    }
+  }
+  function toggleFs() {
+    if (isFs()) {
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      player.classList.remove('is-fs');
+      clearTimeout(idleT); player.classList.remove('fs-idle');
+      paintFs();
+      return;
+    }
+    var req = player.requestFullscreen || player.webkitRequestFullscreen;
+    if (!req) { player.classList.add('is-fs'); fsIdleArm(); paintFs(); return; }
+    try {
+      var r = req.call(player);
+      if (r && r.catch) r.catch(function () { player.classList.add('is-fs'); fsIdleArm(); paintFs(); });
+    } catch (err) {
+      player.classList.add('is-fs'); fsIdleArm(); paintFs();
+    }
+  }
+  $('#btnFs').addEventListener('click', function (e) { e.stopPropagation(); toggleFs(); });
+  $('#fsExit').addEventListener('click', function (e) { e.stopPropagation(); if (isFs()) toggleFs(); });
+  // 全屏下静止 2.6s 自动淡出控制条
+  var idleT = null;
+  function fsIdleArm() {
+    clearTimeout(idleT);
+    player.classList.remove('fs-idle');
+    if (!player.classList.contains('is-fs')) return;
+    idleT = setTimeout(function () { player.classList.add('fs-idle'); }, 2600);
+  }
+  player.addEventListener('pointermove', fsIdleArm);
+  player.addEventListener('pointerdown', fsIdleArm);
+  document.addEventListener('fullscreenchange', function () { if (!document.fullscreenElement) player.classList.remove('is-fs'); paintFs(); });
+  document.addEventListener('webkitfullscreenchange', paintFs);
+  addEventListener('keydown', function (e) { if (e.key === 'Escape' && player.classList.contains('is-fs')) { player.classList.remove('is-fs'); paintFs(); } });
+  paintFs();
+  v.addEventListener('play', syncIcons);
+  v.addEventListener('pause', syncIcons);
+  v.addEventListener('timeupdate', paint);
+  v.addEventListener('loadedmetadata', paint);
+
+  let drag = false;
+  function seek(x) {
+    const r = track.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, (x - r.left) / r.width));
+    if (v.duration) v.currentTime = p * v.duration;
+    paint();
+  }
+  track.addEventListener('pointerdown', e => { drag = true; track.setPointerCapture(e.pointerId); seek(e.clientX); });
+  track.addEventListener('pointermove', e => { if (drag) seek(e.clientX); });
+  track.addEventListener('pointerup', () => { drag = false; });
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(es => {
+      es.forEach(e => { if (!e.isIntersecting && !v.paused) v.pause(); });
+    }, { threshold: .25 }).observe(player);
+  }
+  addEventListener('message', e => {
+    if ((e.data || {}).type === 'pause-all-media') { try { v.pause(); } catch (err) {} }
+  });
+  syncIcons(); paint();
+})();
+</script>
+</body>
+</html>

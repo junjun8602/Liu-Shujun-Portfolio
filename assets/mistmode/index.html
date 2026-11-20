@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html data-page-node-id="yAYV5mplPCfcdalDpnZtQ4" lang="zh-CN">
+<head data-page-node-id="VvWPViakMn8eO2Ids6HHHZ">
+<script data-page-node-id="LQfsyqqaYSiJdUPbQkhuZx" src="/page/page_comm/inject.js"></script>
+<meta data-page-node-id="u7zAdJyXNLwlWHIMv2i1E7" charset="utf-8">
+<meta data-page-node-id="EH9W5F5C2HgXizXI4nm070" content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport">
+<title data-page-node-id="8s95S25NgRvwyEMBO55lBg" data-pnid-children="DRoTnmXkRJ7cAXi7jmW6wk">MISTMODE 2026 · Visual Player</title>
+<style data-page-node-id="LuBwLQgOGo3eBRfgtKcwRB" data-pnid-children="iiw57WTIHOKx5GtTPqELDR">
+  :root{
+    --bg:#08080c; --panel:rgba(16,16,24,.72); --line:rgba(255,255,255,.14);
+    --fg:#f2f2f5; --dim:rgba(242,242,245,.55); --faint:rgba(242,242,245,.28);
+    --accent:#c9d2e0; --ease:cubic-bezier(.22,.61,.2,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    background:var(--bg); color:var(--fg); overflow:hidden;
+    font-family:"Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased; user-select:none; -webkit-user-select:none;
+  }
+  /* ---------- stage ---------- */
+  #stage{position:fixed;inset:0;background:
+    radial-gradient(120% 90% at 50% 8%,rgba(60,64,84,.35),transparent 60%),
+    radial-gradient(100% 100% at 50% 110%,rgba(30,32,44,.5),transparent 60%),
+    var(--bg);}
+  .layer{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    opacity:0;transition:opacity .8s var(--ease);pointer-events:none}
+  .layer.on{opacity:1}
+  .layer img{max-width:min(1200px,92vw);max-height:calc(100% - 150px);object-fit:contain;
+    box-shadow:0 30px 80px rgba(0,0,0,.65);border-radius:4px;
+    animation:kb 9s var(--ease) both}
+  @keyframes kb{from{transform:scale(.975)}to{transform:scale(1.015)}}
+  /* ---------- 文字分层错开出场 ---------- */
+  .layer.fx{display:grid;place-items:center}
+  .layer.fx img{grid-area:1/1;max-width:min(1200px,92vw);max-height:calc(100% - 150px);object-fit:contain}
+  .layer.fx img.fx-t{box-shadow:none;border-radius:0;
+    animation:fxin .85s var(--ease) both;animation-delay:var(--d,0ms);will-change:transform,opacity}
+  @keyframes fxin{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+  #veil{position:fixed;inset:0;pointer-events:none;z-index:5;
+    background:linear-gradient(180deg,rgba(8,8,12,.55),transparent 18%,transparent 78%,rgba(8,8,12,.7))}
+  /* ---------- top bar ---------- */
+  header{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;
+    justify-content:space-between;padding:20px 28px}
+  .brand{display:flex;align-items:baseline;gap:14px}
+  .brand b{font-size:17px;letter-spacing:.34em;font-weight:700}
+  .brand i{font-style:normal;font-size:10.5px;letter-spacing:.3em;color:var(--faint)}
+  .count{font-variant-numeric:tabular-nums;font-size:12.5px;letter-spacing:.22em;color:var(--dim)}
+  .count b{color:var(--fg);font-weight:600}
+  /* ---------- bottom deck ---------- */
+  #deck{position:fixed;left:0;right:0;bottom:0;z-index:10;padding:0 28px 22px;
+    display:flex;flex-direction:column;gap:14px;
+    transition:transform .5s var(--ease),opacity .5s var(--ease)}
+  body.hideui #deck{transform:translateY(14px);opacity:0;pointer-events:none}
+  body.hideui header{opacity:0;pointer-events:none}
+  header{transition:opacity .5s var(--ease)}
+  /* progress */
+  #bar{position:relative;height:22px;cursor:pointer;display:flex;align-items:center}
+  #bar .track{position:relative;width:100%;height:2px;background:rgba(255,255,255,.16);border-radius:2px;overflow:visible}
+  #bar .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#8f9bb0,#e8edf5);border-radius:2px}
+  #bar .dot{position:absolute;top:50%;width:9px;height:9px;border-radius:50%;background:#e8edf5;
+    transform:translate(-50%,-50%);box-shadow:0 0 0 4px rgba(232,237,245,.15);left:0;
+    transition:left .2s linear}
+  #bar:hover .track{height:4px}
+  /* controls row */
+  .row{display:flex;align-items:center;gap:18px}
+  .ctl{appearance:none;border:0;background:none;color:var(--dim);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;border-radius:50%;
+    transition:color .25s,background .25s,transform .25s}
+  .ctl:hover{color:var(--fg)}
+  .ctl:active{transform:scale(.92)}
+  .ctl svg{display:block}
+  .ctl.side{width:38px;height:38px}
+  .ctl.main{width:52px;height:52px;background:rgba(255,255,255,.08);border:1px solid var(--line);color:var(--fg)}
+  .ctl.main:hover{background:rgba(255,255,255,.16)}
+  .meta{display:flex;flex-direction:column;gap:2px;margin-left:6px;min-width:0}
+  .meta .t{font-size:13px;letter-spacing:.14em;white-space:nowrap}
+  .meta .s{font-size:10.5px;letter-spacing:.26em;color:var(--faint);white-space:nowrap}
+  .spacer{flex:1}
+  .chip{font-size:10.5px;letter-spacing:.24em;color:var(--faint);border:1px solid var(--line);
+    border-radius:999px;padding:7px 14px;cursor:pointer;background:none;color:var(--dim);
+    transition:color .25s,border-color .25s;font-family:inherit}
+  .chip:hover,.chip.on{color:var(--fg);border-color:rgba(255,255,255,.4)}
+  /* thumbs */
+  #thumbs{display:none;gap:10px;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:none}
+  #thumbs::-webkit-scrollbar{display:none}
+  #thumbs.on{display:flex}
+  #thumbs button{flex:0 0 auto;width:86px;aspect-ratio:3/4;border:1px solid var(--line);
+    border-radius:6px;overflow:hidden;padding:0;background:#101018;cursor:pointer;opacity:.5;
+    transition:opacity .25s,border-color .25s,transform .25s}
+  #thumbs button img{width:100%;height:100%;object-fit:cover;display:block}
+  #thumbs button:hover{opacity:.85;transform:translateY(-2px)}
+  #thumbs button.cur{opacity:1;border-color:#e8edf5}
+  /* edge arrows (desktop) */
+  .edge{position:fixed;top:50%;transform:translateY(-50%);z-index:9;width:46px;height:46px;
+    display:flex;align-items:center;justify-content:center;border:0;border-radius:50%;
+    background:rgba(16,16,24,.5);border:1px solid var(--line);color:var(--dim);cursor:pointer;
+    transition:color .25s,background .25s,opacity .4s}
+  .edge:hover{color:var(--fg);background:rgba(30,30,44,.7)}
+  .edge.prev{left:22px}.edge.next{right:22px}
+  body.hideui .edge{opacity:0;pointer-events:none}
+  @media(hover:none){.edge{display:none}}
+  @media(max-width:640px){
+    header{padding:14px 16px}
+    #deck{padding:0 16px 14px}
+    .layer img{max-height:calc(100% - 128px)}
+    .meta .s{display:none}
+    .brand i{display:none}
+    .row{gap:10px}
+    .meta{min-width:0;max-width:38vw}
+    .meta .t{overflow:hidden;text-overflow:ellipsis}
+    .ctl.side{width:34px;height:34px}
+    .ctl.main{width:46px;height:46px}
+    #bAuto{display:none}
+    #thumbs button{width:64px}
+  }
+</style>
+</head>
+<body data-page-node-id="uAA9WICGLSJtPZtTFAmv5d">
+<div data-page-node-id="UsYsNbWvXMTBv9t5l6wtjd" id="stage">
+  <div data-page-node-id="FfUxh0mquy74Ps4OSCXetw" class="layer" id="layA"><img data-page-node-id="X7sYJb2OBAk5gTbXfNl4EE" alt></div>
+  <div data-page-node-id="VrBoUn5g8hjIzVqoTAdxjd" class="layer" id="layB"><img data-page-node-id="NLioObQIOHj5oGi74IzwsF" alt></div>
+</div>
+<div data-page-node-id="69j2Mi15ubjPcGTce4cMqd" id="veil"></div>
+
+<header data-page-node-id="MVLkq6rbpQnZJ7OEUiraqJ">
+  <div data-page-node-id="G9m9IBqgCDajt1r8VbGLl4" class="brand"><b data-page-node-id="E3GQDBtOshrA4NQbqGEssb"><!--pnid:NxBRQSX57DE89yjVIE0YnO-->MISTMODE</b><i data-page-node-id="aP2IZIoP2GyWuzJOi0xe1h"><!--pnid:n6LY1or3aY43Bz9L6J83rr-->2026 · VISUAL PLAYER</i></div>
+  <div data-page-node-id="HMqbepFkB2TzxmxKrtlSg4" class="count"><b data-page-node-id="6bpMvSTnKGkpupZIPoWAGt" id="cCur"><!--pnid:dkclkVlAzWv7fo8HZgPon5-->01</b><!--pnid:hatlu27UjMsgpNrCZY9AoF-->&nbsp;/&nbsp;<span data-page-node-id="aPhemwKT49zScpuChgZESI" id="cAll"><!--pnid:8WVxt4x7s5R2x1Ll3WB4fm-->14</span></div>
+</header>
+
+<button data-page-node-id="I5VJvR29Lh1nyRFLeCnycC" aria-label="上一张" class="edge prev" id="ePrev">
+  <svg data-page-node-id="NoYYZFHaSDYD3OryT8AvxA" fill="none" height="18" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="18"><path data-page-node-id="WbdejIz1F4xGRJmUDpQXOO" d="M15 5l-7 7 7 7"/></svg>
+</button>
+<button data-page-node-id="Xk2kXfcRk5Br9TJwvqJORu" aria-label="下一张" class="edge next" id="eNext">
+  <svg data-page-node-id="6NzH6ToYPYjl2eZzRLMlsx" fill="none" height="18" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="18"><path data-page-node-id="Atr873cERRIb7Js4iGhGAs" d="M9 5l7 7-7 7"/></svg>
+</button>
+
+<div data-page-node-id="7qpaoHjZYPObgF77X0p8rI" id="deck">
+  <div data-page-node-id="0nAJxUri9QlVPoyUWeo4KQ" id="bar" title="点击跳转">
+    <div data-page-node-id="gPfgDCAhtQ0f6kTUsz9i3I" class="track"><div data-page-node-id="zmTmNLDwcOgnrXR67YsKTi" class="fill" id="fill"></div><div data-page-node-id="TIGNcyC74UQDcMwlqEo5u6" class="dot" id="dot"></div></div>
+  </div>
+  <div data-page-node-id="xGAhr7cwrootzs5Z1aZFLx" id="thumbs"></div>
+  <div data-page-node-id="rL34LqItP3l46y7yS0i6eZ" class="row">
+    <button data-page-node-id="86p6Z0aGIwgOWdKlmdjhoo" aria-label="上一张" class="ctl side" id="bPrev">
+      <svg data-page-node-id="AZuf58G4sxb0L5GCKqkTZn" fill="currentColor" height="20" viewBox="0 0 24 24" width="20"><path data-page-node-id="ePWaIdXh0udOY2QUIiDgdR" d="M7 5h2v14H7zM19 5v14l-9-7z"/></svg>
+    </button>
+    <button data-page-node-id="DCZQvlx1eCmjR5sSN1Gadz" aria-label="播放/暂停" class="ctl main" id="bPlay">
+      <svg data-page-node-id="y9Vdrs9QiIOxiLnLgr5iNh" fill="currentColor" height="20" id="icPause" viewBox="0 0 24 24" width="20"><path data-page-node-id="rnbUOa85E46yGRyiXnf9Pm" d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z"/></svg>
+      <svg data-page-node-id="dGBNIinADx9yDyoZ1d65rb" fill="currentColor" height="20" id="icPlay" viewBox="0 0 24 24" width="20" style="display:none"><path data-page-node-id="lNKsZIkds4LL4zwwvbSh09" d="M8 5v14l11-7z"/></svg>
+    </button>
+    <button data-page-node-id="LFdh5WHXr1AEySzpH67wii" aria-label="下一张" class="ctl side" id="bNext">
+      <svg data-page-node-id="tJZBNgKGvsGFyzUdvHItTy" fill="currentColor" height="20" viewBox="0 0 24 24" width="20"><path data-page-node-id="MkLUjcw0njy2nSSMUcjWYO" d="M15 5h2v14h-2zM5 5l9 7-9 7z"/></svg>
+    </button>
+    <div data-page-node-id="WP32wASncuH1wQMknBFGQ8" class="meta">
+      <span data-page-node-id="UFHqbiAkBA9W08Bcu9klSq" class="t" id="mTitle"><!--pnid:BBYR0gC85zMQuHG5a0JOyn-->MISTMOOD 01</span>
+      <span data-page-node-id="PlkSiFp4IMBsP9RXlymvqb" class="s" id="mSub"><!--pnid:XOBzdN1yYj6TdUsRx8ypo5-->GROUP VISUAL · 2026</span>
+    </div>
+    <div data-page-node-id="RiTk9Y7BGT3jDJbGQcsvHi" class="spacer"></div>
+    <button data-page-node-id="qoNp920Q3c222Z9neTnJdw" class="chip" id="bThumbs"><!--pnid:09iqsLLwIpwKCYVzvpty0q-->INDEX</button>
+    <button data-page-node-id="wXzOuYJX6YLN0EdZx49PZG" class="chip" id="bAuto"><!--pnid:NJ9r4JkNZufsFCQPm3Kig6-->AUTO&nbsp;5s</button>
+  </div>
+</div>
+
+<script data-page-node-id="59i4RDtb5YAkzoVSrkdCYQ" data-pnid-children="vI82WXxNmafWps4fSdzD2N">
+(function(){
+  var LIST=[
+    {u:"m01.webp",t:"MISTMOOD 01",s:"GROUP VISUAL · 2026"},
+    {u:"m02.webp",t:"MISTMOOD 02",s:"GROUP VISUAL · 2026"},
+    {u:"m03_bg.webp",thumb:"m03.webp",fx:["m03_l1.webp","m03_l2.webp","m03_l3.webp","m03_l4.webp"],t:"MISTMOOD 03",s:"GROUP VISUAL · 2026"},
+    {u:"m04_bg.webp",thumb:"m04.webp",fx:["m04_l1.webp","m04_l2.webp","m04_l3.webp","m04_l4.webp"],t:"MISTMOOD 04",s:"GROUP VISUAL · 2026"},
+    {u:"m05_bg.webp",thumb:"m05.webp",fx:["m05_l1.webp","m05_l2.webp","m05_l3.webp","m05_l4.webp"],t:"MISTMOOD 05",s:"GROUP VISUAL · 2026"},
+    {u:"m06_bg.webp",thumb:"m06.webp",fx:["m06_l1.webp","m06_l2.webp","m06_l3.webp","m06_l4.webp"],t:"MISTMOOD 06",s:"GROUP VISUAL · 2026"},
+    {u:"m07_bg.webp",thumb:"m07.webp",fx:["m07_l1.webp","m07_l2.webp","m07_l3.webp","m07_l4.webp"],t:"MISTMOOD 07",s:"GROUP VISUAL · 2026"},
+    {u:"m08.webp",t:"MISTMOOD 08",s:"GROUP VISUAL · 2026"},
+    {u:"m09.webp",t:"MISTMOOD 09",s:"GROUP VISUAL · 2026"},
+    {u:"m10.webp",t:"MISTMOOD 11",s:"GROUP VISUAL · 2026"},
+    {u:"p1.webp",t:"MISTMOOD 11 · PORTRAIT",s:"STAIRS EDITION"},
+    {u:"p2.webp",t:"MISTMOOD 11 · PORTRAIT Ⅱ",s:"ESCALATOR EDITION"},
+    {u:"m11.webp",t:"MISTMOOD 12",s:"GROUP VISUAL · 2026"},
+    {u:"p3.webp",t:"MISTMOOD 12 · PORTRAIT",s:"GARAGE EDITION"}
+  ];
+  var DUR=5000, cur=0, playing=true, timer=null, t0=0, elapsed=0;
+  var layA=document.getElementById("layA"), layB=document.getElementById("layB");
+  var front=layA, back=layB;
+  var cCur=document.getElementById("cCur"), cAll=document.getElementById("cAll");
+  var fill=document.getElementById("fill"), dot=document.getElementById("dot");
+  var mTitle=document.getElementById("mTitle"), mSub=document.getElementById("mSub");
+  var icPlay=document.getElementById("icPlay"), icPause=document.getElementById("icPause");
+  var thumbs=document.getElementById("thumbs");
+  cAll.textContent=String(LIST.length).padStart(2,"0");
+
+  /* preload all (small files, guarantees instant switching) */
+  LIST.forEach(function(it){
+    var im=new Image(); im.src=it.u;
+    if(it.fx) it.fx.forEach(function(l){ var x=new Image(); x.src=l; });
+  });
+
+  /* build thumbs */
+  LIST.forEach(function(it,i){
+    var b=document.createElement("button");
+    b.innerHTML='<img src="'+(it.thumb||it.u)+'" alt="">';
+    b.addEventListener("click",function(){ go(i,true); });
+    thumbs.appendChild(b);
+  });
+  var tbs=thumbs.querySelectorAll("button");
+
+  function pad(n){ return String(n+1).padStart(2,"0"); }
+
+  function show(i){
+    var it=LIST[i];
+    if(it.fx){
+      back.innerHTML='<img class="fx-bg" alt="" src="'+it.u+'">'
+        + it.fx.map(function(l,j){ return '<img class="fx-t" alt="" style="--d:'+Math.round(320+j*380)+'ms" src="'+l+'">'; }).join('');
+      back.classList.add("fx");
+    }else{
+      back.innerHTML='<img alt="" src="'+it.u+'">';
+      back.classList.remove("fx");
+    }
+    back.classList.add("on"); front.classList.remove("on");
+    var tmp=front; front=back; back=tmp;
+    cCur.textContent=pad(i);
+    mTitle.textContent=it.t; mSub.textContent=it.s;
+    tbs.forEach(function(b,j){ b.classList.toggle("cur",j===i);
+      if(j===i) b.scrollIntoView({block:"nearest",inline:"nearest",behavior:"smooth"}); });
+    elapsed=0; t0=performance.now();
+    paint(0);
+  }
+  function go(i,user){
+    cur=(i+LIST.length)%LIST.length;
+    show(cur);
+    if(user && playing){ resetTimer(); }
+  }
+  function paint(frac){
+    frac=Math.max(0,Math.min(1,frac));
+    fill.style.width=(frac*100)+"%";
+    dot.style.left=(frac*100)+"%";
+  }
+  function resetTimer(){
+    if(timer){ clearInterval(timer); timer=null; }
+    if(!playing) return;
+    elapsed=0; t0=performance.now();
+    timer=setInterval(function(){
+      var e=elapsed+(performance.now()-t0);
+      if(e>=DUR){ go(cur+1,false); }
+      else paint(e/DUR);
+    },80);
+  }
+
+  /* controls */
+  document.getElementById("bPrev").addEventListener("click",function(){ go(cur-1,true); });
+  document.getElementById("bNext").addEventListener("click",function(){ go(cur+1,true); });
+  document.getElementById("ePrev").addEventListener("click",function(){ go(cur-1,true); });
+  document.getElementById("eNext").addEventListener("click",function(){ go(cur+1,true); });
+  document.getElementById("bPlay").addEventListener("click",function(){
+    playing=!playing;
+    icPlay.style.display=playing?"none":"";
+    icPause.style.display=playing?"":"none";
+    if(playing){ t0=performance.now(); resetTimer(); }
+    else{ elapsed+=performance.now()-t0; if(timer){clearInterval(timer);timer=null;} paint(elapsed/DUR); }
+  });
+  document.getElementById("bAuto").addEventListener("click",function(){
+    DUR = DUR===5000 ? 8000 : 5000;
+    this.textContent = DUR===5000 ? "AUTO 5s" : "AUTO 8s";
+    if(playing) resetTimer();
+  });
+  document.getElementById("bThumbs").addEventListener("click",function(){
+    thumbs.classList.toggle("on");
+    this.classList.toggle("on",thumbs.classList.contains("on"));
+  });
+
+  /* seek on progress bar */
+  var bar=document.getElementById("bar");
+  bar.addEventListener("click",function(ev){
+    var r=bar.getBoundingClientRect();
+    var f=(ev.clientX-r.left)/r.width;
+    var target=Math.round(f*(LIST.length-1));
+    go(target,true);
+  });
+
+  /* keyboard */
+  window.addEventListener("keydown",function(e){
+    if(e.key==="ArrowRight"||e.key==="ArrowDown"||e.key===" "){ e.preventDefault(); go(cur+1,true); }
+    else if(e.key==="ArrowLeft"||e.key==="ArrowUp"){ e.preventDefault(); go(cur-1,true); }
+  });
+
+  /* touch swipe */
+  var sx=0,sy=0,on=false;
+  window.addEventListener("touchstart",function(e){
+    if(e.touches.length!==1)return;
+    sx=e.touches[0].clientX; sy=e.touches[0].clientY; on=true;
+  },{passive:true});
+  window.addEventListener("touchend",function(e){
+    if(!on)return; on=false;
+    var dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>48 && Math.abs(dx)>Math.abs(dy)*1.4){ go(cur+(dx<0?1:-1),true); }
+  },{passive:true});
+
+  /* auto-hide UI while idle */
+  var idleT=null;
+  function wake(){
+    document.body.classList.remove("hideui");
+    if(idleT) clearTimeout(idleT);
+    idleT=setTimeout(function(){ document.body.classList.add("hideui"); },3200);
+  }
+  ["mousemove","touchstart","click","keydown"].forEach(function(ev){
+    window.addEventListener(ev,wake,{passive:true});
+  });
+  wake();
+
+  show(0);
+  resetTimer();
+})();
+</script>
+<script id="junxi-guard">
+/* 作品集图片保护：全站禁用右键菜单与「另存为」，表单/可编辑区除外 */
+(function(){
+  function guardDoc(doc){
+    if(!doc || doc.__jg) return;
+    try{ doc.__jg = 1; }catch(e){}
+    doc.addEventListener('contextmenu', function(e){
+      var t = e.target;
+      if(t && t.closest && t.closest('input,textarea,select,[contenteditable="true"]')) return;
+      e.preventDefault();
+    }, true);
+    doc.addEventListener('dragstart', function(e){ e.preventDefault(); }, true);
+    doc.addEventListener('keydown', function(e){
+      var k = (e.key || '').toLowerCase();
+      if((e.ctrlKey || e.metaKey) && (k === 's' || k === 'u' || k === 'p')) e.preventDefault();
+    }, true);
+  }
+  guardDoc(document);
+  function frames(){
+    var fs = document.querySelectorAll('iframe');
+    for(var i = 0; i < fs.length; i++){
+      var f = fs[i];
+      if(!f.__jgHooked){
+        f.__jgHooked = 1;
+        f.addEventListener('load', function(){ try{ guardDoc(this.contentDocument); }catch(e){} });
+      }
+      try{ guardDoc(f.contentDocument); }catch(e){}
+    }
+  }
+  frames();
+  setInterval(frames, 700);
+})();
+</script></body>
+</html>
