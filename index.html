@@ -2515,7 +2515,7 @@ img,canvas,video{-webkit-touch-callout:none;-webkit-user-select:none;user-select
         chrome.style.opacity = on ? '0' : '';
         chrome.style.pointerEvents = on ? 'none' : '';
       }
-      if(on && !snapping){
+      if(on && !snapping && Date.now() > (window.__junxiNoSnapUntil || 0)){
         var stage = document.getElementById('agGallery');
         if(stage){
           var top = stage.getBoundingClientRect().top;
@@ -2712,6 +2712,7 @@ img,canvas,video{-webkit-touch-callout:none;-webkit-user-select:none;user-select
       det.style.clipPath = "none"; det.style.transform = "none";
     }
     document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
     $("vhsClose").focus();
   }
   /* 关闭详情时立刻静音：暂停内嵌页（同源 iframe）与本地所有音视频，避免关了还在响 */
@@ -2747,6 +2748,7 @@ img,canvas,video{-webkit-touch-callout:none;-webkit-user-select:none;user-select
     agPanels.forEach(function(el){ el.classList.remove("hover"); });
     bkFocus(-1);
     document.body.style.overflow = "";
+    document.documentElement.style.overflow = "";
     var finish = function(){
       if(det.dataset.closing !== "1") return;
       det.dataset.closing = "";
@@ -4378,10 +4380,10 @@ __mount.className = 'lanyard3d';
 const __fig = document.querySelector('.portrait');
 if (__fig) { const __cap = __fig.querySelector('figcaption'); __fig.insertBefore(__mount, __cap || null); }
 initLanyard3D(__mount, {
-  frontImage: 'https://workbuddy-space-static.codebuddy.work/image/ecy57dNO8D9GE00PctUzP6.webp',
-  backImage: 'https://workbuddy-space-static.codebuddy.work/image/u2sF34SPwG0onL3wv6T0tW.jpg',
-  strapImage: 'https://workbuddy-space-static.codebuddy.work/image/uKMJDODWZf5XkN6axH17JO.png',
-  clampImage: 'https://workbuddy-space-static.codebuddy.work/image/vT8Jp3Odyw0vgLWkWsw8yI.png',
+  frontImage: 'assets/badge/card-front.webp',
+  backImage: 'assets/badge/card-back.jpg',
+  strapImage: 'assets/badge/strap.png',
+  clampImage: 'assets/badge/clamp.png',
   cardColor: '#b4b8be',
   orientation: 'portrait',
   finish: 'glossy',
@@ -4606,6 +4608,18 @@ body.wb-editing{padding-bottom:120px}
   }
   frames();
   setInterval(frames, 700);
+})();
+</script>
+
+<script>
+/* 跳转锚点（联系我/作品集）时，临时抑制 3D 目录区的自动吸附，避免被拉回目录层 */
+(function(){
+  function hold(){ window.__junxiNoSnapUntil = Date.now() + 1800; }
+  document.addEventListener('click', function(e){
+    var a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+    if(a) hold();
+  }, true);
+  window.addEventListener('hashchange', hold);
 })();
 </script>
 
